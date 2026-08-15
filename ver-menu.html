@@ -88,7 +88,7 @@
             flex: 1;
             width: 100%;
             max-width: 740px;
-            padding: 26px 16px 50px;
+            padding: 26px 16px 80px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -293,6 +293,41 @@
             transform: translateY(-2px);
         }
 
+        /* Botón flotante de WhatsApp para Reservas */
+        .floating-wsp {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #25d366;
+            color: #ffffff;
+            padding: 13px 22px;
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+            z-index: 999;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .floating-wsp:hover {
+            transform: translateY(-3px) scale(1.03);
+            background: #20ba5a;
+            box-shadow: 0 10px 26px rgba(37, 211, 102, 0.5);
+            color: #ffffff;
+        }
+
+        .floating-wsp svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
         /* Ajustes específicos para celulares */
         @media (max-width: 480px) {
             header {
@@ -305,7 +340,7 @@
             }
 
             .container {
-                padding: 20px 12px 40px;
+                padding: 20px 12px 75px;
             }
 
             .menu-overlay {
@@ -339,6 +374,18 @@
                 width: 100%;
                 justify-content: center;
                 padding: 14px 18px;
+            }
+
+            .floating-wsp {
+                bottom: 18px;
+                right: 18px;
+                padding: 11px 18px;
+                font-size: 0.88rem;
+            }
+
+            .floating-wsp svg {
+                width: 20px;
+                height: 20px;
             }
         }
 
@@ -395,6 +442,14 @@
         <a href="index.html" class="btn-volver">← Volver al Menú Principal</a>
     </div>
 
+    <!-- Botón flotante para reservar por WhatsApp -->
+    <a href="#" id="btn-wsp-flotante" class="floating-wsp" target="_blank" rel="noopener noreferrer" title="Reservar mesa por WhatsApp">
+        <svg viewBox="0 0 24 24">
+            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.275.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824zm-3.423-14.416c-6.627 0-12 5.373-12 12 0 2.159.57 4.184 1.564 5.939l-1.636 5.973 6.132-1.609c1.701.929 3.649 1.458 5.72 1.458 6.627 0 12-5.373 12-12 0-6.627-5.373-12-12-12z"/>
+        </svg>
+        <span>Reservar Mesa</span>
+    </a>
+
     <footer>
         Copyright © 2026 <strong>Ignacio Gatti</strong> • Todos los derechos reservados
     </footer>
@@ -409,7 +464,7 @@
         async function initMenu() {
             try {
                 const menuData = await fetchMenuFromSheets();
-                const categoryKeys = Object.keys(menuData);
+                const categoryKeys = Object.keys(menuData).filter(k => !k.startsWith('_'));
 
                 if (categoryKeys.length === 0) {
                     document.getElementById('items-list').innerHTML = '<div class="loading-shimmer">No hay productos cargados en la carta.</div>';
@@ -419,6 +474,12 @@
                 // Si no se pasó categoría o no existe, seleccionar la primera disponible
                 if (!selectedCategory || !menuData[selectedCategory]) {
                     selectedCategory = categoryKeys[0];
+                }
+
+                // Configurar enlace de WhatsApp contextual para la categoría actual
+                const wspBtn = document.getElementById('btn-wsp-flotante');
+                if (wspBtn) {
+                    wspBtn.href = buildWhatsAppLink(selectedCategory);
                 }
 
                 // Renderizar pestañas de categorías dinámicamente sin emojis forzados

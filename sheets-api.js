@@ -5,7 +5,7 @@
 const GOOGLE_SHEET_ID = "1uqoV8K2FPBis51tfvNIHp917s2QecEdb2yLeeCm4yGg";
 const GOOGLE_SHEET_TAB = ""; // Lee automáticamente la primera pestaña
 
-// Categorías base del club (siempre disponibles en la botonera y menú)
+// Categorías base del club
 function getBaseCategories() {
     return {
         "bebidas": {
@@ -47,6 +47,27 @@ function getBaseCategories() {
     };
 }
 
+let CURRENT_WHATSAPP_NUMBER = "5493496000000"; // Número por defecto si no está en el Excel
+
+/**
+ * Genera el enlace de WhatsApp con mensaje personalizado según la sección
+ */
+function buildWhatsAppLink(categoryKey) {
+    let cleanPhone = CURRENT_WHATSAPP_NUMBER.replace(/[^0-9]/g, '');
+
+    let motivo = "en Rivera Club";
+    if (categoryKey === "pizzas") {
+        motivo = "para Pizza Libre (Jueves y Sábados)";
+    } else if (categoryKey === "parrillada" || categoryKey === "viernes") {
+        motivo = "para la Parrillada (Viernes)";
+    } else if (categoryKey === "miercoles") {
+        motivo = "para el Menú de Miércoles";
+    }
+
+    const mensaje = `Hola! Quisiera reservar una mesa ${motivo}.\n\n• Nombre:\n• Cantidad de personas:\n• Día y horario:`;
+    return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(mensaje)}`;
+}
+
 /**
  * Obtiene y organiza los datos 100% en tiempo real desde Google Sheets
  */
@@ -75,7 +96,7 @@ async function fetchMenuFromSheets() {
         const categoriaIdx = cols.findIndex(c => c.includes("cat"));
         const nombreIdx = cols.findIndex(c => c.includes("nomb") || c.includes("plato"));
         const descIdx = cols.findIndex(c => c.includes("desc") || c.includes("ingred") || c.includes("detall"));
-        const precioIdx = cols.findIndex(c => c.includes("prec"));
+        const precioIdx = cols.findIndex(c => c.includes("prec") || c.includes("telefono") || c.includes("wsp"));
         const disponibleIdx = cols.findIndex(c => c.includes("disp"));
 
         rows.forEach(r => {
@@ -86,7 +107,18 @@ async function fetchMenuFromSheets() {
             const catRaw = getVal(categoriaIdx).toLowerCase().trim();
             const nombre = getVal(nombreIdx);
             const desc = getVal(descIdx);
+            const precioRaw = getVal(precioIdx);
             const disponible = getVal(disponibleIdx).toUpperCase();
+
+            // Detectar si esta fila es para configurar el número de WhatsApp
+            const rowText = `${catRaw} ${nombre} ${desc}`.toLowerCase();
+            if (rowText.includes("wsp") || rowText.includes("whatsapp") || rowText.includes("telefono") || rowText.includes("reserva") || catRaw.includes("config")) {
+                const phoneCandidate = (precioRaw || desc || nombre).replace(/[^0-9]/g, '');
+                if (phoneCandidate.length >= 8) {
+                    CURRENT_WHATSAPP_NUMBER = phoneCandidate;
+                }
+                return;
+            }
 
             // Omitir si no hay nombre o si está marcado como NO disponible
             if (!nombre || disponible === "NO" || disponible === "0" || disponible === "FALSE") {
@@ -121,7 +153,7 @@ async function fetchMenuFromSheets() {
                 menuOrganizado[catKey] = {
                     id: catKey,
                     titulo: catRaw.toUpperCase(),
-                    icon: "🍽️",
+                    icon: "",
                     tag: "Menú",
                     subtitulo: "Variedades y precios actualizados",
                     fondo: "fondo.png",
@@ -137,9 +169,10 @@ async function fetchMenuFromSheets() {
             });
         });
 
+        menuOrganizado._whatsappNumber = CURRENT_WHATSAPP_NUMBER;
         return menuOrganizado;
     } catch (err) {
-        console.warn("Error al consultar Google Sheets, devolviendo categorías base:", err);
+        console.warn("Error al consultar Google Sheets, usando configuración base:", err);
         return menuOrganizado;
     }
 }
