@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú • Rivera Club</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-page: #e8f4fc;
+            --bg-card: #ffffff;
+            --border-card: #c8e1f5;
+            --primary-navy: #0c2340;
+            --accent-blue: #0284c7;
+            --light-blue-bg: #e0f2fe;
+            --light-blue-border: #bae6fd;
+            --light-blue-text: #0369a1;
+            --text-main: #0c2340;
+            --text-muted: #52657d;
+            --shadow-card: 0 4px 16px rgba(12, 35, 64, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-page);
+            background-image: 
+                radial-gradient(circle at 50% 0%, #ffffff 0%, transparent 75%),
+                linear-gradient(180deg, #eaf4fc 0%, #dbeefa 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Header */
+        header {
+            width: 100%;
+            padding: 18px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid var(--border-card);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 8px rgba(12, 35, 64, 0.05);
+        }
+
+        .header-logo-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: transform 0.2s ease;
+        }
+
+        .header-logo-link:hover {
+            transform: scale(1.03);
+        }
+
+        header img {
+            height: 75px;
+            width: 75px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: #ffffff;
+            padding: 2px;
+            box-shadow: 0 3px 10px rgba(2, 132, 199, 0.12);
+            border: 2px solid var(--light-blue-border);
+        }
+
+        /* Container */
+        .container {
+            flex: 1;
+            width: 100%;
+            max-width: 740px;
+            padding: 26px 16px 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        /* Category Nav Tabs */
+        .nav-categories {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            width: 100%;
+            padding-bottom: 10px;
+            margin-bottom: 18px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            justify-content: flex-start;
+        }
+
+        @media (min-width: 540px) {
+            .nav-categories {
+                justify-content: center;
+            }
+        }
+
+        .nav-categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-pill {
+            padding: 9px 18px;
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: 9999px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(12, 35, 64, 0.04);
+        }
+
+        .nav-pill:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .nav-pill.active {
+            background: var(--accent-blue);
+            color: #ffffff;
+            border-color: var(--accent-blue);
+            box-shadow: 0 3px 8px rgba(2, 132, 199, 0.25);
+        }
+
+        /* Menu Main Box */
+        .menu-hero-box {
+            width: 100%;
+            background-color: #ffffff;
+            border-radius: 18px;
+            border: 1px solid var(--border-card);
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .menu-overlay {
+            background: #ffffff;
+            padding: 28px 22px;
+            border-radius: 18px;
+            min-height: 280px;
+        }
+
+        .category-header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--border-card);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            background: var(--light-blue-bg);
+            border: 1px solid var(--light-blue-border);
+            border-radius: 9999px;
+            color: var(--light-blue-text);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .badge-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--accent-blue);
+        }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(1.8rem, 5vw, 2.4rem);
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            color: var(--primary-navy);
+        }
+
+        .category-sub {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+        }
+
+        /* Items List */
+        .items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .menu-item-row {
+            background: #f8fcff;
+            border: 1px solid #d8ecf8;
+            border-radius: 14px;
+            padding: 16px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .menu-item-row:hover {
+            background: #f0f8ff;
+            border-color: #bae6fd;
+            transform: translateX(2px);
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            margin-bottom: 3px;
+        }
+
+        .item-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .item-price {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            background: var(--light-blue-bg);
+            border: 1px solid var(--light-blue-border);
+            padding: 6px 14px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+
+        /* Loading indicator */
+        .loading-shimmer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Back Button */
+        .btn-volver {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-blue);
+            color: #ffffff;
+            padding: 14px 28px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: background 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+        }
+
+        .btn-volver:hover {
+            background: #0369a1;
+            transform: translateY(-2px);
+        }
+
+        /* Ajustes específicos para celulares */
+        @media (max-width: 480px) {
+            header {
+                padding: 16px 14px;
+            }
+
+            header img {
+                height: 65px;
+                width: 65px;
+            }
+
+            .container {
+                padding: 20px 12px 40px;
+            }
+
+            .menu-overlay {
+                padding: 20px 14px;
+                border-radius: 14px;
+            }
+
+            h2 {
+                font-size: 1.65rem;
+            }
+
+            .menu-item-row {
+                padding: 14px 12px;
+                gap: 10px;
+            }
+
+            .item-name {
+                font-size: 1.05rem;
+            }
+
+            .item-desc {
+                font-size: 0.8rem;
+            }
+
+            .item-price {
+                font-size: 1.05rem;
+                padding: 5px 10px;
+            }
+
+            .btn-volver {
+                width: 100%;
+                justify-content: center;
+                padding: 14px 18px;
+            }
+        }
+
+        /* Footer */
+        footer {
+            width: 100%;
+            background: var(--primary-navy);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+            text-align: center;
+            padding: 22px 20px;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+
+        footer strong {
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="header-logo-link" title="Volver al menú principal">
+            <img src="FOTO.PNG" alt="Rivera Club">
+        </a>
+    </header>
+
+    <div class="container">
+
+        <!-- Navegación de categorías generada 100% dinámicamente -->
+        <nav class="nav-categories" id="nav-categories"></nav>
+
+        <!-- Recuadro principal del menú con items dinámicos -->
+        <div class="menu-hero-box" id="menu-box">
+            <div class="menu-overlay">
+                <div class="category-header">
+                    <div class="badge" id="cat-badge">
+                        <span class="badge-dot"></span>
+                        <span id="cat-badge-text">Rivera Club</span>
+                    </div>
+                    <h2 id="cat-title">Cargando Menú...</h2>
+                    <p class="category-sub" id="cat-sub">Obteniendo la carta en tiempo real</p>
+                </div>
+
+                <!-- Lista de platos/bebidas desde Google Sheets -->
+                <div class="items-list" id="items-list">
+                    <div class="loading-shimmer">Conectando con la carta...</div>
+                </div>
+            </div>
+        </div>
+
+        <a href="index.html" class="btn-volver">← Volver al Menú Principal</a>
+    </div>
+
+    <footer>
+        Copyright © 2026 <strong>Ignacio Gatti</strong> • Todos los derechos reservados
+    </footer>
+
+    <!-- Conexión en vivo con Google Sheets -->
+    <script src="sheets-api.js"></script>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        let selectedCategory = params.get('cat');
+
+        async function initMenu() {
+            try {
+                const menuData = await fetchMenuFromSheets();
+                const categoryKeys = Object.keys(menuData);
+
+                if (categoryKeys.length === 0) {
+                    document.getElementById('items-list').innerHTML = '<div class="loading-shimmer">No hay productos cargados en la carta.</div>';
+                    return;
+                }
+
+                // Si no se pasó categoría o no existe, seleccionar la primera disponible
+                if (!selectedCategory || !menuData[selectedCategory]) {
+                    selectedCategory = categoryKeys[0];
+                }
+
+                // Renderizar pestañas de categorías dinámicamente sin emojis forzados
+                const nav = document.getElementById('nav-categories');
+                nav.innerHTML = '';
+                categoryKeys.forEach(key => {
+                    const cat = menuData[key];
+                    const pill = document.createElement('a');
+                    pill.href = `ver-menu.html?cat=${encodeURIComponent(key)}`;
+                    pill.className = `nav-pill ${key === selectedCategory ? 'active' : ''}`;
+                    pill.id = `pill-${key}`;
+                    pill.textContent = cat.titulo;
+                    nav.appendChild(pill);
+                });
+
+                // Renderizar datos de la categoría seleccionada
+                const currentData = menuData[selectedCategory];
+                document.title = `${currentData.titulo} • Rivera Club`;
+
+                document.getElementById('cat-badge-text').textContent = currentData.tag || 'Rivera Club';
+                document.getElementById('cat-title').textContent = currentData.titulo;
+                document.getElementById('cat-sub').textContent = currentData.subtitulo || '';
+
+                const listContainer = document.getElementById('items-list');
+                listContainer.innerHTML = '';
+
+                if (currentData.items && currentData.items.length > 0) {
+                    currentData.items.forEach(item => {
+                        const row = document.createElement('div');
+                        row.className = 'menu-item-row';
+                        row.innerHTML = `
+                            <div class="item-info">
+                                <div class="item-name">${item.nombre}</div>
+                                ${item.desc ? `<div class="item-desc">${item.desc}</div>` : ''}
+                            </div>
+                            ${item.precio ? `<div class="item-price">${item.precio}</div>` : ''}
+                        `;
+                        listContainer.appendChild(row);
+                    });
+                } else {
+                    listContainer.innerHTML = `
+                        <div class="loading-shimmer" style="padding: 40px 20px; line-height: 1.6;">
+                            <strong>Carta de ${currentData.titulo}</strong><br><br>
+                            <span style="font-size:0.88rem; opacity:0.8;">Agrega las opciones y precios en tu Google Sheet (con categoria <code>${selectedCategory}</code>) y aparecerán aquí al instante.</span>
+                        </div>
+                    `;
+                }
+
+            } catch (err) {
+                console.error("Error al cargar la carta desde Google Sheets:", err);
+                document.getElementById('items-list').innerHTML = '<div class="loading-shimmer">Error al cargar la carta. Por favor verifica tu conexión o recarga la página.</div>';
+            }
+        }
+
+        initMenu();
+    </script>
+
+</body>
+
+</html>

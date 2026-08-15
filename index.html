@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARTA DIGITAL • Rivera Club</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-page: #e8f4fc;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f0f8ff;
+            --border-card: #c8e1f5;
+            --border-hover: #38bdf8;
+            --primary-navy: #0c2340;
+            --accent-blue: #0284c7;
+            --light-blue-bg: #e0f2fe;
+            --light-blue-border: #bae6fd;
+            --light-blue-text: #0369a1;
+            --text-main: #0c2340;
+            --text-muted: #52657d;
+            --shadow-card: 0 4px 16px rgba(12, 35, 64, 0.07);
+            --shadow-card-hover: 0 10px 24px rgba(2, 132, 199, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-page);
+            background-image: 
+                radial-gradient(circle at 50% 0%, #ffffff 0%, transparent 75%),
+                linear-gradient(180deg, #eaf4fc 0%, #dbeefa 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid var(--border-card);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 8px rgba(12, 35, 64, 0.05);
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        .logo-wrapper:hover {
+            transform: scale(1.03);
+        }
+
+        .logo-img {
+            height: 95px;
+            width: 95px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: #ffffff;
+            padding: 2px;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
+            border: 2px solid var(--light-blue-border);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 36px 20px 60px;
+            text-align: center;
+            max-width: 740px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Hero / Title Section */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            background: var(--light-blue-bg);
+            border: 1px solid var(--light-blue-border);
+            border-radius: 9999px;
+            color: var(--light-blue-text);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--accent-blue);
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.4rem, 6vw, 3.3rem);
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            color: var(--primary-navy);
+        }
+
+        .subtitle {
+            font-size: 1.02rem;
+            color: var(--text-muted);
+            margin-bottom: 34px;
+            font-weight: 500;
+        }
+
+        .subtitle span {
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        /* Grid Menu */
+        .grid-menu {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            width: 100%;
+        }
+
+        @media (min-width: 540px) {
+            .grid-menu {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+        }
+
+        /* Menu Buttons */
+        .menu-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 16px;
+            padding: 22px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            text-decoration: none;
+            color: var(--text-main);
+            position: relative;
+            transition: all 0.22s ease;
+            box-shadow: var(--shadow-card);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-3px);
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .card-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 11px;
+            background: var(--light-blue-bg);
+            border: 1px solid var(--light-blue-border);
+            border-radius: 20px;
+            color: var(--light-blue-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: var(--primary-navy);
+            margin-bottom: 4px;
+        }
+
+        .card-subtitle {
+            font-size: 0.86rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .card-arrow {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            color: var(--accent-blue);
+            font-size: 1.2rem;
+            font-weight: 700;
+            transition: transform 0.2s ease;
+        }
+
+        .menu-card:hover .card-arrow {
+            transform: translateX(4px);
+        }
+
+        .loading-categories {
+            grid-column: 1 / -1;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Ajustes específicos para celulares */
+        @media (max-width: 480px) {
+            header {
+                padding: 16px 14px;
+            }
+
+            .logo-img {
+                height: 80px;
+                width: 80px;
+            }
+
+            .main-content {
+                padding: 24px 14px 40px;
+            }
+
+            h1 {
+                font-size: 2.15rem;
+            }
+
+            .subtitle {
+                font-size: 0.92rem;
+                margin-bottom: 24px;
+            }
+
+            .grid-menu {
+                gap: 12px;
+            }
+
+            .menu-card {
+                padding: 18px 16px;
+                border-radius: 14px;
+            }
+
+            .card-title {
+                font-size: 1.15rem;
+            }
+
+            .card-subtitle {
+                font-size: 0.82rem;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-navy);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+            text-align: center;
+            padding: 22px 20px;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+
+        footer strong {
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-wrapper">
+            <img src="FOTO.PNG" alt="Rivera Club - Esperanza, Santa Fe" class="logo-img">
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="badge">
+            <span class="badge-dot"></span>
+            Menú Digital
+        </div>
+
+        <h1>Rivera Club</h1>
+        <p class="subtitle">Parrilla • Bar • Esperanza, <span>Santa Fe</span></p>
+
+        <!-- Contenedor dinámico de categorías traídas desde Google Sheets -->
+        <div class="grid-menu" id="grid-menu">
+            <div class="loading-categories">Cargando carta en vivo...</div>
+        </div>
+    </div>
+
+    <footer>
+        Copyright © 2026 <strong>Ignacio Gatti</strong> • Todos los derechos reservados
+    </footer>
+
+    <!-- Conexión en vivo con Google Sheets -->
+    <script src="sheets-api.js"></script>
+
+    <script>
+        async function loadCategories() {
+            const grid = document.getElementById('grid-menu');
+
+            try {
+                const data = await fetchMenuFromSheets();
+                const keys = Object.keys(data);
+
+                if (keys.length === 0) {
+                    grid.innerHTML = '<div class="loading-categories">No hay productos disponibles en este momento.</div>';
+                    return;
+                }
+
+                grid.innerHTML = '';
+                keys.forEach(key => {
+                    const cat = data[key];
+                    const card = document.createElement('a');
+                    card.href = `ver-menu.html?cat=${encodeURIComponent(key)}`;
+                    card.className = 'menu-card';
+                    card.id = `btn-${key}`;
+                    card.innerHTML = `
+                        <div class="card-top">
+                            <span class="card-tag">${cat.tag || 'Menú'}</span>
+                        </div>
+                        <div class="card-title">${cat.titulo}</div>
+                        <div class="card-subtitle">${cat.subtitulo || ''}</div>
+                        <div class="card-arrow">→</div>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (err) {
+                console.error("Error al cargar categorías desde Google Sheets:", err);
+                grid.innerHTML = '<div class="loading-categories">Error al conectar con la carta. Por favor recarga la página.</div>';
+            }
+        }
+
+        loadCategories();
+    </script>
+
+</body>
+
+</html>
