@@ -32,7 +32,7 @@ const CATEGORY_METADATA = {
         id: "parrillada",
         titulo: "PARRILLADA",
         tag: "Viernes",
-        subtitulo: "Viernes de cortes premium a las brasas",
+        subtitulo: "Viernes de parrillada completa",
         fondo: "fondo.png"
     }
 };
