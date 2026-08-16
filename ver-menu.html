@@ -14,11 +14,11 @@
         :root {
             --bg-page: #e8f4fc;
             --bg-card: #ffffff;
-            --border-card: #c8e1f5;
+            --border-card: #b6dbf5;
             --primary-navy: #0c2340;
             --accent-blue: #0284c7;
             --light-blue-bg: #e0f2fe;
-            --light-blue-border: #bae6fd;
+            --light-blue-border: #93c5fd;
             --light-blue-text: #0369a1;
             --text-main: #0c2340;
             --text-muted: #52657d;
@@ -218,7 +218,7 @@
 
         .menu-item-row {
             background: #f8fcff;
-            border: 1px solid #d8ecf8;
+            border: 1px solid #a6d4f5;
             border-radius: 14px;
             padding: 16px 18px;
             display: flex;
@@ -226,12 +226,14 @@
             align-items: center;
             gap: 14px;
             transition: all 0.2s ease;
+            box-shadow: 0 1px 4px rgba(2, 132, 199, 0.05);
         }
 
         .menu-item-row:hover {
             background: #f0f8ff;
-            border-color: #bae6fd;
+            border-color: #38bdf8;
             transform: translateX(2px);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1);
         }
 
         .item-info {
@@ -262,6 +264,130 @@
             padding: 6px 14px;
             border-radius: 10px;
             white-space: nowrap;
+        }
+
+        /* Subcategorías / Filtros de Bebidas */
+        .drink-filter-container {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            width: 100%;
+            padding: 4px 2px 16px;
+            margin-bottom: 6px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            justify-content: flex-start;
+        }
+
+        .drink-filter-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (min-width: 540px) {
+            .drink-filter-container {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+        }
+
+        .drink-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 15px;
+            background: #f0f7fc;
+            border: 1px solid #cce3f5;
+            border-radius: 9999px;
+            color: var(--primary-navy);
+            font-size: 0.84rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(12, 35, 64, 0.04);
+            user-select: none;
+        }
+
+        .drink-pill:hover {
+            background: #e0f0fa;
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .drink-pill.active {
+            background: var(--primary-navy);
+            color: #ffffff;
+            border-color: var(--primary-navy);
+            box-shadow: 0 3px 10px rgba(12, 35, 64, 0.25);
+        }
+
+        .drink-pill-count {
+            background: rgba(2, 132, 199, 0.12);
+            color: var(--accent-blue);
+            font-size: 0.72rem;
+            padding: 1px 7px;
+            border-radius: 10px;
+            font-weight: 800;
+            transition: all 0.2s ease;
+        }
+
+        .drink-pill.active .drink-pill-count {
+            background: rgba(255, 255, 255, 0.22);
+            color: #ffffff;
+        }
+
+        /* Encabezados de Tipo / Subcategoría en la lista */
+        .type-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .type-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .type-section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 4px 2px;
+            margin-top: 4px;
+        }
+
+        .type-section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .type-section-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, #c8e1f5 0%, rgba(200, 225, 245, 0.05) 100%);
+        }
+
+        .type-section-badge {
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--light-blue-text);
+            background: var(--light-blue-bg);
+            border: 1px solid var(--light-blue-border);
+            padding: 3px 8px;
+            border-radius: 8px;
+            white-space: nowrap;
+        }
+
+        .items-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
         /* Loading indicator */
@@ -352,6 +478,15 @@
                 font-size: 1.65rem;
             }
 
+            .drink-pill {
+                padding: 7px 12px;
+                font-size: 0.78rem;
+            }
+
+            .type-section-title {
+                font-size: 0.95rem;
+            }
+
             .menu-item-row {
                 padding: 14px 12px;
                 gap: 10px;
@@ -432,6 +567,9 @@
                     <p class="category-sub" id="cat-sub">Obteniendo la carta en tiempo real</p>
                 </div>
 
+                <!-- Filtros secundarios por tipo (ej. Cervezas, Gaseosas, etc.) -->
+                <div class="drink-filter-container" id="drink-filters" style="display: none;"></div>
+
                 <!-- Lista de platos/bebidas desde Google Sheets -->
                 <div class="items-list" id="items-list">
                     <div class="loading-shimmer">Conectando con la carta...</div>
@@ -460,6 +598,197 @@
     <script>
         const params = new URLSearchParams(window.location.search);
         let selectedCategory = params.get('cat');
+        let currentCategoryData = null;
+        let activeDrinkFilter = 'all';
+
+        function createItemRow(item) {
+            const row = document.createElement('div');
+            row.className = 'menu-item-row';
+            row.innerHTML = `
+                <div class="item-info">
+                    <div class="item-name">${item.nombre}</div>
+                    ${item.desc ? `<div class="item-desc">${item.desc}</div>` : ''}
+                </div>
+                ${item.precio ? `<div class="item-price">${item.precio}</div>` : ''}
+            `;
+            return row;
+        }
+
+        function renderCategoryItems(filteredType = 'all') {
+            const listContainer = document.getElementById('items-list');
+            if (!listContainer || !currentCategoryData) return;
+
+            const items = currentCategoryData.items || [];
+            if (items.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="loading-shimmer" style="padding: 40px 20px; line-height: 1.6;">
+                        <strong>Carta de ${currentCategoryData.titulo}</strong><br><br>
+                        <span style="font-size:0.88rem; opacity:0.8;">Agrega las opciones y precios en tu Google Sheet (con categoria <code>${selectedCategory}</code>) y aparecerán aquí al instante.</span>
+                    </div>
+                `;
+                return;
+            }
+
+            const hasTypes = items.some(i => i.tipo);
+
+            // Si tiene subtipos (como en Bebidas)
+            if (hasTypes) {
+                listContainer.innerHTML = '';
+
+                if (filteredType === 'all') {
+                    // Agrupar por tipos
+                    const groups = {};
+                    items.forEach(item => {
+                        const typeKey = item.tipo || 'otras';
+                        if (!groups[typeKey]) {
+                            groups[typeKey] = {
+                                info: {
+                                    nombre: item.tipoNombre || 'Otras',
+                                    orden: item.tipoOrden || 99
+                                },
+                                items: []
+                            };
+                        }
+                        groups[typeKey].items.push(item);
+                    });
+
+                    const sortedKeys = Object.keys(groups).sort((a, b) => groups[a].info.orden - groups[b].info.orden);
+
+                    sortedKeys.forEach(typeKey => {
+                        const group = groups[typeKey];
+                        
+                        const sectionEl = document.createElement('div');
+                        sectionEl.className = 'type-section';
+
+                        const headerEl = document.createElement('div');
+                        headerEl.className = 'type-section-header';
+                        headerEl.innerHTML = `
+                            <span class="type-section-title">${group.info.nombre}</span>
+                            <div class="type-section-line"></div>
+                            <span class="type-section-badge">${group.items.length} ${group.items.length === 1 ? 'opción' : 'opciones'}</span>
+                        `;
+                        sectionEl.appendChild(headerEl);
+
+                        const groupList = document.createElement('div');
+                        groupList.className = 'items-group';
+
+                        group.items.forEach(item => {
+                            const row = createItemRow(item);
+                            groupList.appendChild(row);
+                        });
+
+                        sectionEl.appendChild(groupList);
+                        listContainer.appendChild(sectionEl);
+                    });
+                } else {
+                    // Filtrar por el tipo seleccionado
+                    const filteredItems = items.filter(i => (i.tipo || 'otras') === filteredType);
+                    
+                    if (filteredItems.length === 0) {
+                        listContainer.innerHTML = '<div class="loading-shimmer">No hay productos disponibles en esta sección.</div>';
+                        return;
+                    }
+
+                    const firstItem = filteredItems[0];
+                    const headerEl = document.createElement('div');
+                    headerEl.className = 'type-section-header';
+                    headerEl.style.marginBottom = '6px';
+                    headerEl.innerHTML = `
+                        <span class="type-section-title">${firstItem.tipoNombre || 'Variedad'}</span>
+                        <div class="type-section-line"></div>
+                        <span class="type-section-badge">${filteredItems.length} ${filteredItems.length === 1 ? 'opción' : 'opciones'}</span>
+                    `;
+                    listContainer.appendChild(headerEl);
+
+                    const groupList = document.createElement('div');
+                    groupList.className = 'items-group';
+
+                    filteredItems.forEach(item => {
+                        const row = createItemRow(item);
+                        groupList.appendChild(row);
+                    });
+
+                    listContainer.appendChild(groupList);
+                }
+            } else {
+                // Categoría simple sin tipos (pizzas, parrillada, miercoles)
+                listContainer.innerHTML = '';
+                items.forEach(item => {
+                    const row = createItemRow(item);
+                    listContainer.appendChild(row);
+                });
+            }
+        }
+
+        function setupDrinkFilters(items) {
+            const filterContainer = document.getElementById('drink-filters');
+            if (!filterContainer) return;
+
+            const typesMap = new Map();
+            items.forEach(item => {
+                if (item.tipo && !typesMap.has(item.tipo)) {
+                    typesMap.set(item.tipo, {
+                        id: item.tipo,
+                        nombre: item.tipoNombre || item.tipo,
+                        orden: item.tipoOrden || 99
+                    });
+                }
+            });
+
+            const uniqueTypes = Array.from(typesMap.values()).sort((a, b) => a.orden - b.orden);
+
+            if (uniqueTypes.length > 1) {
+                filterContainer.style.display = 'flex';
+                filterContainer.innerHTML = '';
+
+                // Botón "Todas"
+                const allBtn = document.createElement('button');
+                allBtn.type = 'button';
+                allBtn.className = `drink-pill ${activeDrinkFilter === 'all' ? 'active' : ''}`;
+                allBtn.innerHTML = `
+                    <span class="drink-pill-title">Todas</span>
+                    <span class="drink-pill-count">${items.length}</span>
+                `;
+                allBtn.addEventListener('click', () => {
+                    activeDrinkFilter = 'all';
+                    updateActiveDrinkFilterPills();
+                    renderCategoryItems('all');
+                });
+                filterContainer.appendChild(allBtn);
+
+                // Botón por cada tipo
+                uniqueTypes.forEach(t => {
+                    const count = items.filter(i => i.tipo === t.id).length;
+                    const pill = document.createElement('button');
+                    pill.type = 'button';
+                    pill.className = `drink-pill ${activeDrinkFilter === t.id ? 'active' : ''}`;
+                    pill.dataset.type = t.id;
+                    pill.innerHTML = `
+                        <span class="drink-pill-title">${t.nombre}</span>
+                        <span class="drink-pill-count">${count}</span>
+                    `;
+                    pill.addEventListener('click', () => {
+                        activeDrinkFilter = t.id;
+                        updateActiveDrinkFilterPills();
+                        renderCategoryItems(t.id);
+                    });
+                    filterContainer.appendChild(pill);
+                });
+            } else {
+                filterContainer.style.display = 'none';
+            }
+        }
+
+        function updateActiveDrinkFilterPills() {
+            const pills = document.querySelectorAll('.drink-pill');
+            pills.forEach(p => {
+                if (p.dataset.type) {
+                    p.classList.toggle('active', p.dataset.type === activeDrinkFilter);
+                } else {
+                    p.classList.toggle('active', activeDrinkFilter === 'all');
+                }
+            });
+        }
 
         async function initMenu() {
             try {
@@ -482,7 +811,7 @@
                     wspBtn.href = buildWhatsAppLink(selectedCategory);
                 }
 
-                // Renderizar pestañas de categorías dinámicamente sin emojis forzados
+                // Renderizar pestañas de categorías dinámicamente
                 const nav = document.getElementById('nav-categories');
                 nav.innerHTML = '';
                 categoryKeys.forEach(key => {
@@ -495,42 +824,25 @@
                     nav.appendChild(pill);
                 });
 
-                // Renderizar datos de la categoría seleccionada
-                const currentData = menuData[selectedCategory];
-                document.title = `${currentData.titulo} • Rivera Club`;
+                // Cargar datos de la categoría seleccionada
+                currentCategoryData = menuData[selectedCategory];
+                document.title = `${currentCategoryData.titulo} • Rivera Club`;
 
-                document.getElementById('cat-badge-text').textContent = currentData.tag || 'Rivera Club';
-                document.getElementById('cat-title').textContent = currentData.titulo;
-                document.getElementById('cat-sub').textContent = currentData.subtitulo || '';
+                document.getElementById('cat-badge-text').textContent = currentCategoryData.tag || 'Rivera Club';
+                document.getElementById('cat-title').textContent = currentCategoryData.titulo;
+                document.getElementById('cat-sub').textContent = currentCategoryData.subtitulo || '';
 
-                const listContainer = document.getElementById('items-list');
-                listContainer.innerHTML = '';
-
-                if (currentData.items && currentData.items.length > 0) {
-                    currentData.items.forEach(item => {
-                        const row = document.createElement('div');
-                        row.className = 'menu-item-row';
-                        row.innerHTML = `
-                            <div class="item-info">
-                                <div class="item-name">${item.nombre}</div>
-                                ${item.desc ? `<div class="item-desc">${item.desc}</div>` : ''}
-                            </div>
-                            ${item.precio ? `<div class="item-price">${item.precio}</div>` : ''}
-                        `;
-                        listContainer.appendChild(row);
-                    });
-                } else {
-                    listContainer.innerHTML = `
-                        <div class="loading-shimmer" style="padding: 40px 20px; line-height: 1.6;">
-                            <strong>Carta de ${currentData.titulo}</strong><br><br>
-                            <span style="font-size:0.88rem; opacity:0.8;">Agrega las opciones y precios en tu Google Sheet (con categoria <code>${selectedCategory}</code>) y aparecerán aquí al instante.</span>
-                        </div>
-                    `;
-                }
+                // Inicializar filtros si aplica y renderizar los ítems
+                activeDrinkFilter = 'all';
+                setupDrinkFilters(currentCategoryData.items || []);
+                renderCategoryItems('all');
 
             } catch (err) {
                 console.error("Error al cargar la carta desde Google Sheets:", err);
-                document.getElementById('items-list').innerHTML = '<div class="loading-shimmer">Error al cargar la carta. Por favor verifica tu conexión o recarga la página.</div>';
+                document.getElementById('cat-badge-text').textContent = 'Rivera Club';
+                document.getElementById('cat-title').textContent = 'Carta no disponible';
+                document.getElementById('cat-sub').textContent = 'No se pudo sincronizar con Google Sheets';
+                document.getElementById('items-list').innerHTML = '<div class="loading-shimmer">No se pudo obtener la carta en tiempo real.<br><br><span style="font-size:0.85rem; opacity:0.8;">Por favor verifica tu conexión a internet o intenta nuevamente más tarde.</span></div>';
             }
         }
 
