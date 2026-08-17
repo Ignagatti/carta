@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://carta-rivera.vercel.app/sitemap.xml
