@@ -330,6 +330,353 @@
             }
         }
 
+        /* Sección de Calificaciones y Opiniones */
+        .feedback-section {
+            width: 100%;
+            margin-top: 36px;
+        }
+
+        .feedback-card {
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: 20px;
+            padding: 28px 22px;
+            box-shadow: 0 6px 20px rgba(12, 35, 64, 0.08);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #0284c7, #38bdf8, #f59e0b);
+        }
+
+        .feedback-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            border-radius: 9999px;
+            color: #b45309;
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .feedback-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            margin-bottom: 6px;
+        }
+
+        .feedback-header p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        /* Estrellas Interactivas */
+        .star-rating-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .star-rating {
+            display: inline-flex;
+            flex-direction: row-reverse;
+            gap: 6px;
+            justify-content: center;
+        }
+
+        .star-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 2.3rem;
+            color: #cbd5e1;
+            transition: transform 0.18s ease, color 0.18s ease, filter 0.18s ease;
+            line-height: 1;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .star-btn:hover,
+        .star-btn:hover~.star-btn,
+        .star-btn.active {
+            color: #f59e0b;
+            filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.45));
+        }
+
+        .star-btn:hover {
+            transform: scale(1.22) rotate(-6deg);
+        }
+
+        .star-btn:active {
+            transform: scale(0.95);
+        }
+
+        .rating-label {
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: var(--light-blue-text);
+            background: var(--light-blue-bg);
+            padding: 5px 14px;
+            border-radius: 9999px;
+            border: 1px solid var(--light-blue-border);
+            min-height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+        }
+
+        .rating-label.highlight {
+            background: #fef3c7;
+            border-color: #fde68a;
+            color: #92400e;
+        }
+
+        /* Tags / Chips Rápidos */
+        .feedback-tags-wrapper {
+            margin: 18px 0 16px;
+            text-align: left;
+            animation: fadeInFeedback 0.3s ease forwards;
+        }
+
+        .tags-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .feedback-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .feedback-chip {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 9999px;
+            padding: 7px 13px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .feedback-chip:hover {
+            border-color: var(--accent-blue);
+            background: var(--light-blue-bg);
+            color: var(--light-blue-text);
+            transform: translateY(-1px);
+        }
+
+        .feedback-chip.selected {
+            background: var(--primary-navy);
+            border-color: var(--primary-navy);
+            color: #ffffff;
+            box-shadow: 0 3px 8px rgba(12, 35, 64, 0.15);
+        }
+
+        /* Entradas de texto y comentario */
+        .feedback-inputs {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: left;
+            animation: fadeInFeedback 0.35s ease forwards;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group textarea,
+        .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            color: var(--text-main);
+            background: #f8fafc;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            resize: vertical;
+        }
+
+        .input-group textarea:focus,
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        .btn-submit-feedback {
+            background: linear-gradient(135deg, var(--primary-navy) 0%, #0369a1 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 13px 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.22s ease;
+            box-shadow: 0 4px 14px rgba(12, 35, 64, 0.2);
+            margin-top: 4px;
+        }
+
+        .btn-submit-feedback:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35);
+            background: linear-gradient(135deg, #091a30 0%, #0284c7 100%);
+        }
+
+        .btn-submit-feedback:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Pantalla de Éxito */
+        .feedback-success {
+            padding: 20px 10px;
+            animation: fadeInFeedback 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .success-icon-badge {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #dcfce7;
+            color: #15803d;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(21, 128, 61, 0.15);
+        }
+
+        .success-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            margin-bottom: 6px;
+        }
+
+        .success-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+            margin-bottom: 18px;
+            max-width: 440px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .success-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        .btn-google-maps {
+            background: #ffffff;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .btn-google-maps:hover {
+            border-color: #ea4335;
+            background: #fff5f5;
+            color: #ea4335;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset-feedback {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 8px;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeInFeedback {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Footer */
         footer {
             background: var(--primary-navy);
@@ -368,6 +715,79 @@
         <div class="grid-menu" id="grid-menu">
             <div class="loading-categories">Cargando carta en vivo...</div>
         </div>
+
+        <!-- Sección de Calificaciones y Opiniones -->
+        <section class="feedback-section" id="feedback-section">
+            <div class="feedback-card">
+                <div class="feedback-header">
+                    <span class="feedback-badge">Tu Opinión</span>
+                    <h2>¿Cómo fue tu experiencia hoy?</h2>
+                    <p>Tu opinión nos ayuda a brindarte el mejor servicio en cada visita.</p>
+                </div>
+
+                <form id="feedback-form" class="feedback-form" onsubmit="handleFeedbackSubmit(event)">
+                    <!-- Selector de Estrellas -->
+                    <div class="star-rating-container">
+                        <div class="star-rating" id="star-rating" role="radiogroup"
+                            aria-label="Calificación de 1 a 5 estrellas">
+                            <button type="button" class="star-btn" data-value="5"
+                                title="5 estrellas - Excelente">★</button>
+                            <button type="button" class="star-btn" data-value="4"
+                                title="4 estrellas - Muy buena">★</button>
+                            <button type="button" class="star-btn" data-value="3" title="3 estrellas - Buena">★</button>
+                            <button type="button" class="star-btn" data-value="2"
+                                title="2 estrellas - Regular">★</button>
+                            <button type="button" class="star-btn" data-value="1"
+                                title="1 estrella - Muy mala">★</button>
+                        </div>
+                        <div class="rating-label" id="rating-label">Toca las estrellas para calificar</div>
+                    </div>
+
+                    <!-- Tags / Chips Rápidos (aparecen dinámicamente) -->
+                    <div class="feedback-tags-wrapper" id="feedback-tags-wrapper" style="display: none;">
+                        <div class="tags-title" id="tags-title">¿Qué fue lo más destacado?</div>
+                        <div class="feedback-chips" id="feedback-chips"></div>
+                    </div>
+
+                    <!-- Entradas de Comentario y Nombre -->
+                    <div class="feedback-inputs" id="feedback-inputs" style="display: none;">
+                        <div class="input-group">
+                            <label for="feedback-comment">Comentario o sugerencia (opcional)</label>
+                            <textarea id="feedback-comment" rows="3"
+                                placeholder="Contanos qué te gustó o qué podemos mejorar..."></textarea>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="feedback-author">Tu nombre o N° de mesa (opcional)</label>
+                            <input type="text" id="feedback-author" placeholder="Ej: Mesa 4 / Martín">
+                        </div>
+
+                        <button type="submit" id="btn-submit-feedback" class="btn-submit-feedback">
+                            <span>Enviar Calificación</span>
+                            <span class="btn-icon">➜</span>
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Estado de Éxito / Agradecimiento -->
+                <div id="feedback-success" class="feedback-success" style="display: none;">
+                    <div class="success-icon-badge" id="success-icon">✓</div>
+                    <div class="success-title" id="success-title">¡Muchas gracias por tu opinión!</div>
+                    <div class="success-desc" id="success-desc">Tu valoración ha sido registrada correctamente.</div>
+
+                    <div class="success-actions" id="success-actions">
+                        <a href="https://www.google.com/maps/place/Club+Bochas+Barrio+Rivera/@-31.4455704,-60.9352463,19z/data=!4m8!3m7!1s0x95b5133d054ac1dd:0xa44781d89be03d78!8m2!3d-31.4451511!4d-60.9352919!9m1!1b1!16s%2Fg%2F1tf08vjj?authuser=0&entry=ttu"
+                            id="btn-maps-action" target="_blank" rel="noopener noreferrer" class="btn-google-maps"
+                            style="display: none;">
+                            <span>Compartir también en Google Maps</span>
+                        </a>
+                        <button type="button" class="btn-reset-feedback" onclick="resetFeedbackForm()">Calificar otra
+                            vez</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
 
     <!-- Botón flotante para reservar por WhatsApp -->
@@ -388,6 +808,9 @@
     <script src="sheets-api.js"></script>
 
     <script>
+        // =========================================================================
+        // LÓGICA DE CARGA DE CATEGORÍAS
+        // =========================================================================
         async function loadCategories() {
             const grid = document.getElementById('grid-menu');
 
@@ -431,6 +854,193 @@
         }
 
         loadCategories();
+
+        // =========================================================================
+        // LÓGICA INTERACTIVA DE CALIFICACIONES Y RESEÑAS
+        // =========================================================================
+        let currentRating = 0;
+        let selectedTags = new Set();
+
+        const RATING_MESSAGES = {
+            1: "1 Estrella • Muy mala experiencia",
+            2: "2 Estrellas • Regular",
+            3: "3 Estrellas • Buena experiencia",
+            4: "4 Estrellas • Muy buena",
+            5: "5 Estrellas • Excelente experiencia"
+        };
+
+        const POSITIVE_TAGS = [
+            "Parrilla excelente",
+            "Pizzas recomendadas",
+            "Rápida atención",
+            "Buen ambiente",
+            "Precios accesibles",
+        ];
+
+        const IMPROVEMENT_TAGS = [
+            "Demora en la atención",
+            "Temperatura de la comida",
+            "Atención del personal",
+            "Nivel de sonido",
+            "Variedad de opciones"
+        ];
+
+        function setupFeedbackWidget() {
+            const starButtons = document.querySelectorAll('.star-btn');
+            const ratingLabel = document.getElementById('rating-label');
+            const starContainer = document.getElementById('star-rating');
+
+            starButtons.forEach(btn => {
+                const val = parseInt(btn.getAttribute('data-value'), 10);
+                btn.addEventListener('click', () => {
+                    setRating(val);
+                });
+                btn.addEventListener('mouseenter', () => {
+                    ratingLabel.textContent = RATING_MESSAGES[val] || `${val} Estrellas`;
+                    ratingLabel.classList.add('highlight');
+                });
+            });
+
+            starContainer.addEventListener('mouseleave', () => {
+                if (currentRating > 0) {
+                    ratingLabel.textContent = RATING_MESSAGES[currentRating];
+                    ratingLabel.classList.add('highlight');
+                } else {
+                    ratingLabel.textContent = 'Toca las estrellas para calificar';
+                    ratingLabel.classList.remove('highlight');
+                }
+            });
+        }
+
+        function setRating(val) {
+            currentRating = val;
+            const starButtons = document.querySelectorAll('.star-btn');
+            const ratingLabel = document.getElementById('rating-label');
+            const tagsWrapper = document.getElementById('feedback-tags-wrapper');
+            const inputsWrapper = document.getElementById('feedback-inputs');
+            const tagsTitle = document.getElementById('tags-title');
+
+            // Actualizar clases de estrellas
+            starButtons.forEach(btn => {
+                const btnVal = parseInt(btn.getAttribute('data-value'), 10);
+                if (btnVal <= val) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Actualizar etiqueta
+            ratingLabel.textContent = RATING_MESSAGES[val] || `${val} Estrellas`;
+            ratingLabel.classList.add('highlight');
+
+            // Mostrar secciones
+            tagsWrapper.style.display = 'block';
+            inputsWrapper.style.display = 'flex';
+
+            // Configurar tags según sea positivo o sugerencia de mejora
+            selectedTags.clear();
+            const chipsContainer = document.getElementById('feedback-chips');
+            chipsContainer.innerHTML = '';
+
+            const tagsToUse = val >= 4 ? POSITIVE_TAGS : IMPROVEMENT_TAGS;
+            tagsTitle.textContent = val >= 4 ? "¿Qué fue lo más destacado?" : "¿En qué podemos mejorar?";
+
+            tagsToUse.forEach(tagText => {
+                const chip = document.createElement('button');
+                chip.type = 'button';
+                chip.className = 'feedback-chip';
+                chip.textContent = tagText;
+                chip.addEventListener('click', () => {
+                    if (selectedTags.has(tagText)) {
+                        selectedTags.delete(tagText);
+                        chip.classList.remove('selected');
+                    } else {
+                        selectedTags.add(tagText);
+                        chip.classList.add('selected');
+                    }
+                });
+                chipsContainer.appendChild(chip);
+            });
+        }
+
+        async function handleFeedbackSubmit(event) {
+            event.preventDefault();
+            if (currentRating === 0) {
+                alert("Por favor selecciona una cantidad de estrellas tocando las estrellas arriba.");
+                return;
+            }
+
+            const submitBtn = document.getElementById('btn-submit-feedback');
+            const comment = document.getElementById('feedback-comment').value;
+            const author = document.getElementById('feedback-author').value;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>Enviando opinión...</span>';
+
+            const reviewData = {
+                rating: currentRating,
+                ratingText: RATING_MESSAGES[currentRating] || `${currentRating} Estrellas`,
+                tags: Array.from(selectedTags),
+                comment: comment,
+                author: author
+            };
+
+            try {
+                await sendFeedbackReview(reviewData);
+
+                // Ocultar formulario y mostrar pantalla de éxito
+                document.getElementById('feedback-form').style.display = 'none';
+                const successBox = document.getElementById('feedback-success');
+                successBox.style.display = 'block';
+
+                const icon = document.getElementById('success-icon');
+                const title = document.getElementById('success-title');
+                const desc = document.getElementById('success-desc');
+                const mapsBtn = document.getElementById('btn-maps-action');
+
+                icon.textContent = '✓';
+                icon.style.background = '#dcfce7';
+                icon.style.color = '#15803d';
+
+                if (currentRating >= 4) {
+                    title.textContent = '¡Muchas gracias!';
+                    desc.textContent = 'Nos alegra saber que disfrutaste de Rivera Club. Si quieres, puedes dejarnos también tu opinión en Google Maps:';
+
+                    if (typeof GOOGLE_MAPS_REVIEW_URL !== 'undefined' && GOOGLE_MAPS_REVIEW_URL) {
+                        mapsBtn.href = GOOGLE_MAPS_REVIEW_URL;
+                        mapsBtn.style.display = 'inline-flex';
+                    }
+                } else {
+                    title.textContent = '¡Muchas gracias por tu opinión!';
+                    desc.textContent = 'Agradecemos tu sinceridad. Tomamos cada comentario para seguir mejorando día a día la atención y la calidad de nuestro servicio.';
+
+                    mapsBtn.style.display = 'none';
+                }
+
+            } catch (err) {
+                console.error("Error al procesar feedback:", err);
+                alert("Hubo un detalle al enviar, pero tu mensaje fue guardado localmente. ¡Gracias!");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Enviar Calificación</span><span class="btn-icon">➜</span>';
+            }
+        }
+
+        function resetFeedbackForm() {
+            currentRating = 0;
+            selectedTags.clear();
+            document.getElementById('feedback-form').reset();
+            document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('rating-label').textContent = 'Toca las estrellas para calificar';
+            document.getElementById('rating-label').classList.remove('highlight');
+            document.getElementById('feedback-tags-wrapper').style.display = 'none';
+            document.getElementById('feedback-inputs').style.display = 'none';
+            document.getElementById('feedback-success').style.display = 'none';
+            document.getElementById('feedback-form').style.display = 'block';
+        }
+
+        setupFeedbackWidget();
     </script>
 
 </body>

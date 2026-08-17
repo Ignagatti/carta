@@ -5,6 +5,12 @@
 const GOOGLE_SHEET_ID = "1uqoV8K2FPBis51tfvNIHp917s2QecEdb2yLeeCm4yGg";
 const GOOGLE_SHEET_TAB = ""; // Lee automáticamente la primera pestaña
 
+// URL del Web App de Google Apps Script para recibir calificaciones
+const GOOGLE_APPS_SCRIPT_FEEDBACK_URL = "https://script.google.com/macros/s/AKfycbxGSFWtznXZytwO_ltEZh1Z78ag8uLqT7OGWglHWTlrX0zx5ECrmEHIwGO9FS8Z4r_A/exec";
+
+// Enlace directo de Google Maps para invitar a clientes satisfechos (4 y 5 estrellas) a dejar reseña
+const GOOGLE_MAPS_REVIEW_URL = "https://www.google.com/maps/place/Club+Bochas+Barrio+Rivera/@-31.4455704,-60.9352463,19z/data=!4m8!3m7!1s0x95b5133d054ac1dd:0xa44781d89be03d78!8m2!3d-31.4451511!4d-60.9352919!9m1!1b1!16s%2Fg%2F1tf08vjj?authuser=0&entry=ttu";
+
 // Metadatos de configuración visual para categorías conocidas
 const CATEGORY_METADATA = {
     "bebidas": {
@@ -260,4 +266,53 @@ async function fetchMenuFromSheets() {
 
     menuOrganizado._whatsappNumber = CURRENT_WHATSAPP_NUMBER;
     return menuOrganizado;
+}
+
+/**
+ * Envía una calificación y reseña a Google Sheets mediante Google Apps Script
+ * @param {Object} reviewData - { rating: number, ratingText: string, tags: string[], comment: string, author: string }
+ */
+async function sendFeedbackReview(reviewData) {
+    const now = new Date();
+    const payload = {
+        fecha: now.toLocaleDateString("es-AR"),
+        hora: now.toLocaleTimeString("es-AR", { hour: '2-digit', minute: '2-digit' }),
+        estrellas: Number(reviewData.rating) || 5,
+        valoracion: reviewData.ratingText || `${reviewData.rating} Estrellas`,
+        etiquetas: Array.isArray(reviewData.tags) ? reviewData.tags.join(", ") : (reviewData.tags || ""),
+        comentario: (reviewData.comment || "").trim(),
+        autor: (reviewData.author || "Anónimo").trim() || "Anónimo",
+        timestamp: now.toISOString()
+    };
+
+    // Guardado de respaldo local (útil para pruebas inmediatas y modo offline)
+    try {
+        const stored = JSON.parse(localStorage.getItem('rivera_reviews_backup') || '[]');
+        stored.unshift(payload);
+        localStorage.setItem('rivera_reviews_backup', JSON.stringify(stored.slice(0, 50)));
+    } catch (e) {
+        console.warn("No se pudo guardar copia local en localStorage:", e);
+    }
+
+    // Si está configurada la URL de Google Apps Script, enviar a Google Sheets
+    if (GOOGLE_APPS_SCRIPT_FEEDBACK_URL && GOOGLE_APPS_SCRIPT_FEEDBACK_URL.startsWith("http")) {
+        try {
+            await fetch(GOOGLE_APPS_SCRIPT_FEEDBACK_URL, {
+                method: "POST",
+                mode: "no-cors", // Envío seguro a Apps Script sin bloqueos CORS
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify(payload)
+            });
+            console.log("Calificación enviada a Google Sheets exitosamente:", payload);
+        } catch (err) {
+            console.error("Error al enviar calificación a Google Sheets:", err);
+            // No bloqueamos el flujo del usuario para garantizar una excelente experiencia
+        }
+    } else {
+        console.info("Aviso: Calificación guardada localmente.", payload);
+    }
+
+    return { success: true, payload };
 }
