@@ -586,7 +586,7 @@
         .promo-modal-card {
             background: #ffffff;
             border-radius: 24px;
-            max-width: 460px;
+            max-width: 470px;
             width: 100%;
             padding: 28px 24px 24px;
             box-shadow: 0 20px 40px rgba(12, 35, 64, 0.25);
@@ -667,9 +667,9 @@
         .promo-items-preview {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             margin-bottom: 20px;
-            max-height: 220px;
+            max-height: 250px;
             overflow-y: auto;
             text-align: left;
             padding: 4px;
@@ -679,16 +679,42 @@
             background: #fffbeb;
             border: 1px solid #fde68a;
             border-radius: 12px;
-            padding: 10px 14px;
+            padding: 11px 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .promo-preview-item:hover {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.15);
+        }
+
+        .promo-preview-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+        }
+
+        .promo-preview-cat {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #b45309;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .promo-preview-name {
             font-family: 'Outfit', sans-serif;
-            font-size: 0.95rem;
+            font-size: 0.96rem;
             font-weight: 800;
             color: var(--primary-navy);
         }
@@ -696,6 +722,7 @@
         .promo-preview-desc {
             font-size: 0.78rem;
             color: #78350f;
+            line-height: 1.35;
         }
 
         .promo-preview-price {
@@ -705,7 +732,7 @@
             color: #b45309;
             background: #ffffff;
             border: 1px solid #fde68a;
-            padding: 4px 10px;
+            padding: 5px 11px;
             border-radius: 8px;
             white-space: nowrap;
         }
@@ -879,7 +906,7 @@
         }
 
         .instagram-btn:hover {
-            transform: translateY(-2px) scale(1.03);
+            transform: translateY(-2px scale(1.03);
             box-shadow: 0 6px 20px rgba(220, 39, 67, 0.5);
             filter: brightness(1.08);
             color: #ffffff;
@@ -967,13 +994,13 @@
         <div class="promo-modal-card">
             <button type="button" class="promo-close-btn" onclick="closePromoModal()" title="Cerrar">✕</button>
             <div class="promo-modal-badge">Promociones</div>
-            <h3 class="promo-modal-title">Bebidas en Promoción</h3>
-            <p class="promo-modal-desc">Aprovechá los precios especiales por tiempo limitado en la barra de Rivera Club.</p>
+            <h3 class="promo-modal-title">Promociones Destacadas</h3>
+            <p class="promo-modal-desc">Aprovechá los mejores precios y promociones especiales por tiempo limitado en Rivera Club.</p>
             
             <div class="promo-items-preview" id="promo-preview-list"></div>
 
-            <button type="button" class="promo-cta-btn" onclick="goToDrinkPromos()">
-                <span>Ver Bebidas en Promo</span>
+            <button type="button" class="promo-cta-btn" id="btn-promo-cta" onclick="goToFirstPromo()">
+                <span>Ver Promociones</span>
                 <span>➜</span>
             </button>
             <button type="button" class="promo-secondary-btn" onclick="closePromoModal()">Continuar al menú</button>
@@ -1006,6 +1033,7 @@
         let currentCategoryData = null;
         let activeDrinkFilter = initialFilter || 'all';
         let globalMenuData = null;
+        let currentLoadedPromos = [];
 
         function createItemRow(item) {
             const isPromo = item.isPromo || item.tipo === 'promos';
@@ -1210,12 +1238,19 @@
                 return;
             }
 
+            currentLoadedPromos = promos;
             previewContainer.innerHTML = '';
-            promos.slice(0, 4).forEach(item => {
-                const el = document.createElement('div');
+            promos.slice(0, 5).forEach(item => {
+                const targetUrl = item.categoriaKey === 'bebidas' 
+                    ? 'ver-menu.html?cat=bebidas&filter=promos' 
+                    : `ver-menu.html?cat=${encodeURIComponent(item.categoriaKey)}`;
+
+                const el = document.createElement('a');
+                el.href = targetUrl;
                 el.className = 'promo-preview-item';
                 el.innerHTML = `
-                    <div>
+                    <div class="promo-preview-info">
+                        <span class="promo-preview-cat">${item.categoriaTitulo || item.categoriaKey}</span>
                         <div class="promo-preview-name">${item.nombre}</div>
                         ${item.desc ? `<div class="promo-preview-desc">${item.desc}</div>` : ''}
                     </div>
@@ -1246,15 +1281,24 @@
             }
         }
 
-        function goToDrinkPromos() {
+        function goToFirstPromo() {
             closePromoModal();
-            if (selectedCategory === 'bebidas') {
-                activeDrinkFilter = 'promos';
-                updateActiveDrinkFilterPills();
-                renderCategoryItems('promos');
-                document.getElementById('menu-box').scrollIntoView({ behavior: 'smooth' });
-            } else {
-                window.location.href = 'ver-menu.html?cat=bebidas&filter=promos';
+            if (currentLoadedPromos.length > 0) {
+                const first = currentLoadedPromos[0];
+                if (first.categoriaKey === selectedCategory) {
+                    if (selectedCategory === 'bebidas') {
+                        activeDrinkFilter = 'promos';
+                        updateActiveDrinkFilterPills();
+                        renderCategoryItems('promos');
+                    }
+                    document.getElementById('menu-box').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    if (first.categoriaKey === 'bebidas') {
+                        window.location.href = 'ver-menu.html?cat=bebidas&filter=promos';
+                    } else {
+                        window.location.href = `ver-menu.html?cat=${encodeURIComponent(first.categoriaKey)}`;
+                    }
+                }
             }
         }
 

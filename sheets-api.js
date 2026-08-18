@@ -229,15 +229,20 @@ async function fetchMenuFromSheets() {
             };
         }
 
+        // Deteccion universal de promocion para cualquier categoria (Pizzas, Bebidas, Parrillada, Miércoles)
         const isPromo = (
             catRaw.includes("promo") ||
-            subcatRaw.toLowerCase().includes("promo") ||
+            (subcatRaw && subcatRaw.toLowerCase().includes("promo")) ||
             nombre.toLowerCase().includes("promo") ||
             desc.toLowerCase().includes("promo") ||
             nombre.toLowerCase().includes("2x1") ||
             desc.toLowerCase().includes("2x1") ||
             nombre.toLowerCase().includes("combo") ||
-            desc.toLowerCase().includes("combo")
+            desc.toLowerCase().includes("combo") ||
+            nombre.toLowerCase().includes("oferta") ||
+            desc.toLowerCase().includes("oferta") ||
+            nombre.toLowerCase().includes("descuento") ||
+            desc.toLowerCase().includes("descuento")
         );
 
         const itemObj = {
@@ -261,7 +266,7 @@ async function fetchMenuFromSheets() {
         menuOrganizado[catKey].items.push(itemObj);
     });
 
-    // Recolectar unicamente las promociones reales existentes en el Google Sheet
+    // Recolectar todas las promociones existentes en cualquier categoria
     const allPromos = [];
     Object.keys(menuOrganizado).forEach(key => {
         if (!key.startsWith('_') && menuOrganizado[key].items) {
@@ -277,14 +282,24 @@ async function fetchMenuFromSheets() {
         }
     });
 
-    // Ordenar bebidas poniendo las promos primero
-    if (menuOrganizado.bebidas && menuOrganizado.bebidas.items.length > 0) {
-        menuOrganizado.bebidas.items.sort((a, b) => {
-            const ordenA = (a.isPromo || a.tipo === "promos") ? 0 : (a.tipoOrden || 99);
-            const ordenB = (b.isPromo || b.tipo === "promos") ? 0 : (b.tipoOrden || 99);
-            return ordenA - ordenB;
-        });
-    }
+    // Ordenar items en TODAS las categorias para que las promociones siempre salgan primeras
+    Object.keys(menuOrganizado).forEach(catKey => {
+        if (!catKey.startsWith('_') && menuOrganizado[catKey].items) {
+            menuOrganizado[catKey].items.sort((a, b) => {
+                const promoRankA = (a.isPromo || a.tipo === "promos") ? 0 : 1;
+                const promoRankB = (b.isPromo || b.tipo === "promos") ? 0 : 1;
+                if (promoRankA !== promoRankB) {
+                    return promoRankA - promoRankB;
+                }
+                if (catKey === "bebidas") {
+                    const ordenA = a.tipoOrden !== undefined ? a.tipoOrden : 99;
+                    const ordenB = b.tipoOrden !== undefined ? b.tipoOrden : 99;
+                    return ordenA - ordenB;
+                }
+                return 0;
+            });
+        }
+    });
 
     menuOrganizado._promosList = allPromos;
     menuOrganizado._whatsappNumber = CURRENT_WHATSAPP_NUMBER;
