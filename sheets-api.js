@@ -78,7 +78,7 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
         if (lowerCat.includes("cervez")) return { id: "cervezas", nombre: "Cervezas", icon: "", orden: 1 };
         if (lowerCat.includes("gaseos")) return { id: "gaseosas", nombre: "Gaseosas y Saborizadas", icon: "", orden: 2 };
         if (lowerCat.includes("agua") || lowerCat.includes("soda")) return { id: "aguas", nombre: "Aguas y Sodas", icon: "", orden: 3 };
-        if (lowerCat.includes("trag") || lowerCat.includes("coctel") || lowerCat.includes("aperit")) return { id: "tragos", nombre: "Tragos y Coctelería", icon: "", orden: 4 };
+        if (lowerCat.includes("trag") || lowerCat.includes("coctel") || lowerCat.includes("aperit")) return { id: "tragos", nombre: "Tragos", icon: "", orden: 4 };
         if (lowerCat.includes("vino") || lowerCat.includes("espumant")) return { id: "vinos", nombre: "Vinos", icon: "", orden: 5 };
     }
 
