@@ -898,6 +898,11 @@
                     return;
                 }
 
+                // Si la categoría pedida es alias o variante (ej. cocteleria o tragos) y existe bebidas
+                if (selectedCategory && (selectedCategory.includes("coctel") || selectedCategory.includes("trag")) && menuData["bebidas"]) {
+                    selectedCategory = "bebidas";
+                }
+
                 if (!selectedCategory || !menuData[selectedCategory]) {
                     selectedCategory = categoryKeys[0];
                 }

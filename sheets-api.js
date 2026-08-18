@@ -68,7 +68,7 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
         if (lower.includes("cervez")) return { id: "cervezas", nombre: "Cervezas", icon: "", orden: 1 };
         if (lower.includes("gaseos") || lower.includes("saboriz")) return { id: "gaseosas", nombre: "Gaseosas y Saborizadas", icon: "", orden: 2 };
         if (lower.includes("agua") || lower.includes("soda")) return { id: "aguas", nombre: "Aguas y Sodas", icon: "", orden: 3 };
-        if (lower.includes("trag") || lower.includes("coctel") || lower.includes("aperit") || lower.includes("bar")) return { id: "tragos", nombre: "Tragos y Coctelería", icon: "", orden: 4 };
+        if (lower.includes("trag") || lower.includes("coctel") || lower.includes("cóctel") || lower.includes("aperit") || lower.includes("bar")) return { id: "tragos", nombre: "Tragos", icon: "", orden: 4 };
         if (lower.includes("vino") || lower.includes("espumant") || lower.includes("champ")) return { id: "vinos", nombre: "Vinos", icon: "", orden: 5 };
         return { id: lower.replace(/[^a-z0-9]/g, '-'), nombre: cleanSub, icon: "", orden: 6 };
     }
@@ -78,7 +78,7 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
         if (lowerCat.includes("cervez")) return { id: "cervezas", nombre: "Cervezas", icon: "", orden: 1 };
         if (lowerCat.includes("gaseos")) return { id: "gaseosas", nombre: "Gaseosas y Saborizadas", icon: "", orden: 2 };
         if (lowerCat.includes("agua") || lowerCat.includes("soda")) return { id: "aguas", nombre: "Aguas y Sodas", icon: "", orden: 3 };
-        if (lowerCat.includes("trag") || lowerCat.includes("coctel") || lowerCat.includes("aperit")) return { id: "tragos", nombre: "Tragos", icon: "", orden: 4 };
+        if (lowerCat.includes("trag") || lowerCat.includes("coctel") || lowerCat.includes("cóctel") || lowerCat.includes("aperit")) return { id: "tragos", nombre: "Tragos", icon: "", orden: 4 };
         if (lowerCat.includes("vino") || lowerCat.includes("espumant")) return { id: "vinos", nombre: "Vinos", icon: "", orden: 5 };
     }
 
@@ -86,11 +86,12 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
 
     const tragoKeywords = [
         "fernet", "gin", "aperol", "campari", "vermut", "vermouth", "vodka", "daiquiri",
-        "mojito", "ron", "whisky", "whiskey", "coctel", "cóctel", "trago", "gancia", "cynar",
-        "negroni", "branca", "jagermeister", "carpano", "cinzano", "martini", "licor", "caipiriña", "caipiroska"
+        "mojito", "ron", "whisky", "whiskey", "coctel", "cóctel", "cocteleria", "coctelería",
+        "trago", "gancia", "cynar", "negroni", "branca", "jagermeister", "carpano", "cinzano",
+        "martini", "licor", "caipiriña", "caipiroska"
     ];
     if (tragoKeywords.some(kw => text.includes(kw))) {
-        return { id: "tragos", nombre: "Tragos ", icon: "", orden: 4 };
+        return { id: "tragos", nombre: "Tragos", icon: "", orden: 4 };
     }
 
     const vinoKeywords = [
@@ -128,119 +129,208 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
     return { id: "otras", nombre: "Otras Bebidas", icon: "", orden: 6 };
 }
 
-// Carga y procesamiento del menu desde Google Sheets
+// Carga y procesamiento del menu desde Google Sheets con fallback inteligente
 async function fetchMenuFromSheets() {
     if (!GOOGLE_SHEET_ID) {
         throw new Error("No se ha configurado el ID de Google Sheets");
     }
 
-    const sheetParam = GOOGLE_SHEET_TAB ? `&sheet=${encodeURIComponent(GOOGLE_SHEET_TAB)}` : '';
-    const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json${sheetParam}&t=${new Date().getTime()}`;
+    try {
+        const sheetParam = GOOGLE_SHEET_TAB ? `&sheet=${encodeURIComponent(GOOGLE_SHEET_TAB)}` : '';
+        const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json${sheetParam}&t=${new Date().getTime()}`;
 
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("No se pudo conectar con Google Sheets");
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("No se pudo conectar con Google Sheets");
 
-    const text = await response.text();
-    const jsonStart = text.indexOf("{");
-    const jsonEnd = text.lastIndexOf("}") + 1;
-    if (jsonStart === -1 || jsonEnd === 0) throw new Error("Respuesta inválida de Google Sheets");
-    const json = JSON.parse(text.substring(jsonStart, jsonEnd));
+        const text = await response.text();
+        const jsonStart = text.indexOf("{");
+        const jsonEnd = text.lastIndexOf("}") + 1;
+        if (jsonStart === -1 || jsonEnd === 0) throw new Error("Respuesta inválida de Google Sheets");
+        const json = JSON.parse(text.substring(jsonStart, jsonEnd));
 
-    const menuOrganizado = {};
+        const menuOrganizado = {};
+        const rows = (json.table && json.table.rows) || [];
 
-    const cols = json.table.cols.map(c => (c.label || c.id || "").trim().toLowerCase());
-    const rows = json.table.rows;
-
-    const categoriaIdx = cols.findIndex(c => c.includes("cat"));
-    const subcatIdx = cols.findIndex(c => c.includes("subcat") || c.includes("tipo") || c.includes("variedad"));
-    const nombreIdx = cols.findIndex(c => c.includes("nomb") || c.includes("plato") || c.includes("producto"));
-    const descIdx = cols.findIndex(c => c.includes("desc") || c.includes("ingred") || c.includes("detall"));
-    const precioIdx = cols.findIndex(c => c.includes("prec") || c.includes("telefono") || c.includes("wsp"));
-    const disponibleIdx = cols.findIndex(c => c.includes("disp"));
-
-    rows.forEach(r => {
-        if (!r || !r.c) return;
-
-        const getVal = (idx) => (idx !== -1 && r.c[idx] && r.c[idx].v !== null && r.c[idx].v !== undefined ? String(r.c[idx].v).trim() : "");
-
-        const catRaw = getVal(categoriaIdx).toLowerCase().trim();
-        const subcatRaw = getVal(subcatIdx);
-        const nombre = getVal(nombreIdx);
-        const desc = getVal(descIdx);
-        const precioRaw = getVal(precioIdx);
-        const disponible = getVal(disponibleIdx).toUpperCase();
-
-        const rowText = `${catRaw} ${nombre} ${desc}`.toLowerCase();
-        if (rowText.includes("wsp") || rowText.includes("whatsapp") || rowText.includes("telefono") || rowText.includes("reserva") || catRaw.includes("config")) {
-            const phoneCandidate = (precioRaw || desc || nombre).replace(/[^0-9]/g, '');
-            if (phoneCandidate.length >= 8) {
-                CURRENT_WHATSAPP_NUMBER = phoneCandidate;
-            }
-            return;
+        if (rows.length === 0) {
+            throw new Error("La planilla no contiene filas");
         }
 
-        if (!nombre || disponible === "NO" || disponible === "0" || disponible === "FALSE") {
-            return;
-        }
+        // 1. Detección por etiquetas en json.table.cols
+        const cols = (json.table.cols || []).map(c => (c.label || c.id || "").trim().toLowerCase());
 
-        let precio = "";
-        if (precioIdx !== -1 && r.c[precioIdx]) {
-            const cell = r.c[precioIdx];
-            if (cell.f) {
-                precio = cell.f.replace(/,/g, '.');
-            } else if (cell.v !== null && cell.v !== undefined && cell.v !== "") {
-                const num = Number(cell.v);
-                if (!isNaN(num) && num > 0) {
-                    precio = "$" + num.toLocaleString("es-AR");
-                } else {
-                    precio = String(cell.v).trim();
+        let categoriaIdx = cols.findIndex(c => c.includes("cat"));
+        let subcatIdx = cols.findIndex(c => c.includes("subcat") || c.includes("tipo") || c.includes("variedad"));
+        let nombreIdx = cols.findIndex(c => c.includes("nomb") || c.includes("plato") || c.includes("producto") || c.includes("item"));
+        let descIdx = cols.findIndex(c => c.includes("desc") || c.includes("ingred") || c.includes("detall"));
+        let precioIdx = cols.findIndex(c => c.includes("prec") || c.includes("valor") || c.includes("costo"));
+        let disponibleIdx = cols.findIndex(c => c.includes("disp") || c.includes("activo") || c.includes("habilit"));
+
+        let startRowIndex = 0;
+
+        // 2. Si Google Sheets no detectó encabezados en cols, buscar en la fila 0 de rows
+        if (categoriaIdx === -1 || nombreIdx === -1) {
+            const firstRow = rows[0];
+            if (firstRow && firstRow.c) {
+                const headerRowVals = firstRow.c.map(cell => (cell && cell.v !== null && cell.v !== undefined ? String(cell.v).toLowerCase().trim() : ""));
+                
+                const fCatIdx = headerRowVals.findIndex(v => v.includes("cat"));
+                const fSubIdx = headerRowVals.findIndex(v => v.includes("subcat") || v.includes("tipo") || v.includes("variedad"));
+                const fNomIdx = headerRowVals.findIndex(v => v.includes("nomb") || v.includes("plato") || v.includes("producto") || v.includes("item"));
+                const fDescIdx = headerRowVals.findIndex(v => v.includes("desc") || v.includes("ingred") || v.includes("detall"));
+                const fPrecIdx = headerRowVals.findIndex(v => v.includes("prec") || v.includes("valor"));
+                const fDispIdx = headerRowVals.findIndex(v => v.includes("disp") || v.includes("activo"));
+
+                if (fNomIdx !== -1 || fCatIdx !== -1) {
+                    if (fCatIdx !== -1) categoriaIdx = fCatIdx;
+                    if (fSubIdx !== -1) subcatIdx = fSubIdx;
+                    if (fNomIdx !== -1) nombreIdx = fNomIdx;
+                    if (fDescIdx !== -1) descIdx = fDescIdx;
+                    if (fPrecIdx !== -1) precioIdx = fPrecIdx;
+                    if (fDispIdx !== -1) disponibleIdx = fDispIdx;
+                    startRowIndex = 1;
                 }
             }
         }
 
-        let catKey = catRaw || "pizzas";
-        if (catKey.includes("beb") || catKey.includes("trag") || catKey.includes("cervez") || catKey.includes("vino") || catKey.includes("gaseos")) catKey = "bebidas";
-        else if (catKey.includes("mier") || catKey.includes("miér")) catKey = "miercoles";
-        else if (catKey.includes("piz")) catKey = "pizzas";
-        else if (catKey.includes("vier") || catKey.includes("parr") || catKey.includes("asad")) catKey = "parrillada";
+        // 3. Fallback a posiciones estándar si aún no se encuentran: Col 0=Cat, Col 1=Subcat, Col 2=Nombre, Col 3=Desc, Col 4=Precio, Col 5=Disp
+        if (categoriaIdx === -1) categoriaIdx = 0;
+        if (subcatIdx === -1) subcatIdx = 1;
+        if (nombreIdx === -1) nombreIdx = 2;
+        if (descIdx === -1) descIdx = 3;
+        if (precioIdx === -1) precioIdx = 4;
+        if (disponibleIdx === -1) disponibleIdx = 5;
 
-        if (!menuOrganizado[catKey]) {
-            const meta = CATEGORY_METADATA[catKey] || {
-                id: catKey,
-                titulo: catRaw.toUpperCase(),
-                tag: "Menú",
-                subtitulo: "Variedades y precios actualizados",
-                fondo: "fondo.png"
+        for (let i = startRowIndex; i < rows.length; i++) {
+            const r = rows[i];
+            if (!r || !r.c) continue;
+
+            const getVal = (idx) => (idx !== -1 && r.c[idx] && r.c[idx].v !== null && r.c[idx].v !== undefined ? String(r.c[idx].v).trim() : "");
+
+            const catRaw = getVal(categoriaIdx).toLowerCase().trim();
+            const subcatRaw = getVal(subcatIdx);
+            const nombre = getVal(nombreIdx);
+            const desc = getVal(descIdx);
+            const precioRaw = getVal(precioIdx);
+            const disponible = getVal(disponibleIdx).toUpperCase();
+
+            // Saltear filas que repitan nombres de encabezado
+            const lowerNom = nombre.toLowerCase();
+            if (lowerNom === "nombre" || lowerNom === "plato" || lowerNom === "producto" || catRaw === "categoría" || catRaw === "categoria") {
+                continue;
+            }
+
+            // Detección de configuración de teléfono / WhatsApp
+            const rowText = `${catRaw} ${nombre} ${desc}`.toLowerCase();
+            if (rowText.includes("wsp") || rowText.includes("whatsapp") || rowText.includes("telefono") || rowText.includes("reserva") || catRaw.includes("config")) {
+                const phoneCandidate = (precioRaw || desc || nombre).replace(/[^0-9]/g, '');
+                if (phoneCandidate.length >= 8) {
+                    CURRENT_WHATSAPP_NUMBER = phoneCandidate;
+                }
+                continue;
+            }
+
+            if (!nombre || disponible === "NO" || disponible === "0" || disponible === "FALSE") {
+                continue;
+            }
+
+            let precio = "";
+            if (precioIdx !== -1 && r.c[precioIdx]) {
+                const cell = r.c[precioIdx];
+                if (cell.f) {
+                    precio = cell.f.replace(/,/g, '.');
+                } else if (cell.v !== null && cell.v !== undefined && cell.v !== "") {
+                    const num = Number(cell.v);
+                    if (!isNaN(num) && num > 0) {
+                        precio = "$" + num.toLocaleString("es-AR");
+                    } else {
+                        precio = String(cell.v).trim();
+                    }
+                }
+            }
+
+            let catKey = catRaw || "pizzas";
+            if (
+                catKey.includes("beb") ||
+                catKey.includes("trag") ||
+                catKey.includes("coctel") ||
+                catKey.includes("cóctel") ||
+                catKey.includes("cervez") ||
+                catKey.includes("vino") ||
+                catKey.includes("gaseos") ||
+                catKey.includes("aperit") ||
+                catKey.includes("bar") ||
+                catKey.includes("licor")
+            ) {
+                catKey = "bebidas";
+            } else if (catKey.includes("mier") || catKey.includes("miér")) {
+                catKey = "miercoles";
+            } else if (catKey.includes("piz")) {
+                catKey = "pizzas";
+            } else if (catKey.includes("vier") || catKey.includes("parr") || catKey.includes("asad")) {
+                catKey = "parrillada";
+            }
+
+            if (!menuOrganizado[catKey]) {
+                const meta = CATEGORY_METADATA[catKey] || {
+                    id: catKey,
+                    titulo: (catRaw || catKey).toUpperCase(),
+                    tag: "Menú",
+                    subtitulo: "Variedades y precios actualizados",
+                    fondo: "fondo.png"
+                };
+                menuOrganizado[catKey] = {
+                    ...meta,
+                    items: []
+                };
+            }
+
+            const itemObj = {
+                nombre: nombre,
+                desc: desc,
+                precio: precio
             };
-            menuOrganizado[catKey] = {
-                ...meta,
-                items: []
-            };
+
+            if (catKey === "bebidas") {
+                const subtype = getDrinkSubtype(nombre, desc, subcatRaw, catRaw);
+                itemObj.tipo = subtype.id;
+                itemObj.tipoNombre = subtype.nombre;
+                itemObj.tipoIcon = "";
+                itemObj.tipoOrden = subtype.orden;
+            }
+
+            menuOrganizado[catKey].items.push(itemObj);
         }
 
-        const itemObj = {
-            nombre: nombre,
-            desc: desc,
-            precio: precio
-        };
-
-        if (catKey === "bebidas") {
-            const subtype = getDrinkSubtype(nombre, desc, subcatRaw, catRaw);
-            itemObj.tipo = subtype.id;
-            itemObj.tipoNombre = subtype.nombre;
-            itemObj.tipoIcon = "";
-            itemObj.tipoOrden = subtype.orden;
+        if (menuOrganizado.bebidas && menuOrganizado.bebidas.items.length > 0) {
+            menuOrganizado.bebidas.items.sort((a, b) => (a.tipoOrden || 99) - (b.tipoOrden || 99));
         }
 
-        menuOrganizado[catKey].items.push(itemObj);
-    });
+        menuOrganizado._whatsappNumber = CURRENT_WHATSAPP_NUMBER;
 
-    if (menuOrganizado.bebidas && menuOrganizado.bebidas.items.length > 0) {
-        menuOrganizado.bebidas.items.sort((a, b) => (a.tipoOrden || 99) - (b.tipoOrden || 99));
+        // Guardar copia de respaldo en cache local
+        if (Object.keys(menuOrganizado).filter(k => !k.startsWith('_')).length > 0) {
+            try {
+                localStorage.setItem('rivera_menu_cache', JSON.stringify(menuOrganizado));
+            } catch (e) {}
+            return menuOrganizado;
+        }
+
+        throw new Error("No se encontraron productos en Google Sheets");
+
+    } catch (err) {
+        console.warn("No se pudo cargar desde Google Sheets en vivo, buscando copia en caché local:", err);
+        try {
+            const cached = localStorage.getItem('rivera_menu_cache');
+            if (cached) {
+                const parsed = JSON.parse(cached);
+                if (parsed && Object.keys(parsed).filter(k => !k.startsWith('_')).length > 0) {
+                    console.log("Menú recuperado exitosamente desde caché local.");
+                    return parsed;
+                }
+            }
+        } catch (e) {}
+        throw err;
     }
-
-    menuOrganizado._whatsappNumber = CURRENT_WHATSAPP_NUMBER;
-    return menuOrganizado;
 }
 
 // Envio de calificaciones
