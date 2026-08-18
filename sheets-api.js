@@ -1,11 +1,6 @@
-// =========================================================================
-// CONEXIÓN EN TIEMPO REAL CON GOOGLE SHEETS - RIVERA CLUB
-// =========================================================================
-
 const GOOGLE_SHEET_ID = "1uqoV8K2FPBis51tfvNIHp917s2QecEdb2yLeeCm4yGg";
-const GOOGLE_SHEET_TAB = ""; // Lee automáticamente la primera pestaña
+const GOOGLE_SHEET_TAB = "";
 
-// Conexión directa con Google Sheets mediante Google Forms en segundo plano (100% libre de errores)
 const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLScntWPNVbd8ch5QPZvCoj8pVReXjId6caQDyIA_v91sUi9apw/formResponse";
 const GOOGLE_FORM_FIELDS = {
     estrellas: "entry.1587233656",
@@ -14,10 +9,8 @@ const GOOGLE_FORM_FIELDS = {
     nombre: "entry.1347048923"
 };
 
-// Enlace directo de Google Maps para invitar a clientes satisfechos (4 y 5 estrellas) a dejar reseña
 const GOOGLE_MAPS_REVIEW_URL = "https://www.google.com/maps/place/Club+Bochas+Barrio+Rivera/@-31.4455704,-60.9352463,19z/data=!4m8!3m7!1s0x95b5133d054ac1dd:0xa44781d89be03d78!8m2!3d-31.4451511!4d-60.9352919!9m1!1b1!16s%2Fg%2F1tf08vjj?authuser=0&entry=ttu";
 
-// Metadatos de configuración visual para categorías conocidas
 const CATEGORY_METADATA = {
     "bebidas": {
         id: "bebidas",
@@ -49,11 +42,8 @@ const CATEGORY_METADATA = {
     }
 };
 
-let CURRENT_WHATSAPP_NUMBER = "5493496000000"; // Número por defecto si no está en el Excel
+let CURRENT_WHATSAPP_NUMBER = "5493496000000";
 
-/**
- * Genera el enlace de WhatsApp con mensaje personalizado según la sección
- */
 function buildWhatsAppLink(categoryKey) {
     let cleanPhone = CURRENT_WHATSAPP_NUMBER.replace(/[^0-9]/g, '');
 
@@ -70,11 +60,8 @@ function buildWhatsAppLink(categoryKey) {
     return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(mensaje)}`;
 }
 
-/**
- * Detecta o normaliza el tipo/subcategoría de una bebida
- */
+// Clasificacion automatica de bebidas
 function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
-    // 1. Si viene explícito en la columna 'tipo' o 'subcategoria' de Google Sheets
     if (subcatColValue && subcatColValue.trim()) {
         const cleanSub = subcatColValue.trim();
         const lower = cleanSub.toLowerCase();
@@ -86,7 +73,6 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
         return { id: lower.replace(/[^a-z0-9]/g, '-'), nombre: cleanSub, icon: "", orden: 6 };
     }
 
-    // 2. Si viene en el texto de la categoría (ej: "bebidas - cervezas" o "cervezas")
     if (catRaw) {
         const lowerCat = catRaw.toLowerCase();
         if (lowerCat.includes("cervez")) return { id: "cervezas", nombre: "Cervezas", icon: "", orden: 1 };
@@ -96,10 +82,8 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
         if (lowerCat.includes("vino") || lowerCat.includes("espumant")) return { id: "vinos", nombre: "Vinos", icon: "", orden: 5 };
     }
 
-    // 3. Detección automática inteligente por nombre y descripción
     const text = `${nombre || ''} ${desc || ''}`.toLowerCase();
 
-    // Tragos y Coctelería (prioridad para que "Fernet con Coca", "Gin Tonic" se clasifiquen como Trago)
     const tragoKeywords = [
         "fernet", "gin", "aperol", "campari", "vermut", "vermouth", "vodka", "daiquiri",
         "mojito", "ron", "whisky", "whiskey", "coctel", "cóctel", "trago", "gancia", "cynar",
@@ -109,7 +93,6 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
         return { id: "tragos", nombre: "Tragos y Coctelería", icon: "", orden: 4 };
     }
 
-    // Vinos y Espumantes
     const vinoKeywords = [
         "vino", "malbec", "cabernet", "tinto", "blanco", "rosado", "champagne", "espumante",
         "syrah", "merlot", "chardonnay", "sauvignon", "cosecha tardia", "cosecha tardía", "torrontes",
@@ -119,7 +102,6 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
         return { id: "vinos", nombre: "Vinos", icon: "", orden: 5 };
     }
 
-    // Cervezas
     const cervezaKeywords = [
         "santa fe", "heineken", "cerveza", "corona", "stella", "imperial", "quilmes", "brahma",
         "schneider", "pilsen", "porron", "porrón", "chopp", "liso", "ipa", "stout", "golden",
@@ -129,13 +111,11 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
         return { id: "cervezas", nombre: "Cervezas", icon: "", orden: 1 };
     }
 
-    // Aguas y Sodas
     const aguaKeywords = ["agua", "soda", "mineral", "con gas", "sin gas", "aquafina", "kin", "villavicencio", "eco de los andes", "glaciar"];
     if (aguaKeywords.some(kw => text.includes(kw))) {
         return { id: "aguas", nombre: "Aguas y Sodas", icon: "", orden: 3 };
     }
 
-    // Gaseosas y Saborizadas
     const gaseosaKeywords = [
         "coca", "coca-cola", "sprite", "fanta", "pepsi", "7up", "seven up", "paso de los toros",
         "gaseosa", "saborizada", "levite", "levité", "aquarius", "aquariux", "pomelo", "naranja",
@@ -148,9 +128,7 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
     return { id: "otras", nombre: "Otras Bebidas", icon: "", orden: 6 };
 }
 
-/**
- * Obtiene y organiza los datos 100% en tiempo real desde Google Sheets
- */
+// Carga y procesamiento del menu desde Google Sheets
 async function fetchMenuFromSheets() {
     if (!GOOGLE_SHEET_ID) {
         throw new Error("No se ha configurado el ID de Google Sheets");
@@ -192,7 +170,6 @@ async function fetchMenuFromSheets() {
         const precioRaw = getVal(precioIdx);
         const disponible = getVal(disponibleIdx).toUpperCase();
 
-        // Detectar si esta fila es para configurar el número de WhatsApp
         const rowText = `${catRaw} ${nombre} ${desc}`.toLowerCase();
         if (rowText.includes("wsp") || rowText.includes("whatsapp") || rowText.includes("telefono") || rowText.includes("reserva") || catRaw.includes("config")) {
             const phoneCandidate = (precioRaw || desc || nombre).replace(/[^0-9]/g, '');
@@ -202,12 +179,10 @@ async function fetchMenuFromSheets() {
             return;
         }
 
-        // Omitir si no hay nombre o si está marcado como NO disponible
         if (!nombre || disponible === "NO" || disponible === "0" || disponible === "FALSE") {
             return;
         }
 
-        // Formatear precio
         let precio = "";
         if (precioIdx !== -1 && r.c[precioIdx]) {
             const cell = r.c[precioIdx];
@@ -223,14 +198,12 @@ async function fetchMenuFromSheets() {
             }
         }
 
-        // Normalizar clave de categoría principal
         let catKey = catRaw || "pizzas";
         if (catKey.includes("beb") || catKey.includes("trag") || catKey.includes("cervez") || catKey.includes("vino") || catKey.includes("gaseos")) catKey = "bebidas";
         else if (catKey.includes("mier") || catKey.includes("miér")) catKey = "miercoles";
         else if (catKey.includes("piz")) catKey = "pizzas";
         else if (catKey.includes("vier") || catKey.includes("parr") || catKey.includes("asad")) catKey = "parrillada";
 
-        // Crear la categoría dinámicamente si tiene al menos un plato en Google Sheets
         if (!menuOrganizado[catKey]) {
             const meta = CATEGORY_METADATA[catKey] || {
                 id: catKey,
@@ -245,14 +218,12 @@ async function fetchMenuFromSheets() {
             };
         }
 
-        // Crear objeto del ítem
         const itemObj = {
             nombre: nombre,
             desc: desc,
             precio: precio
         };
 
-        // Si es una bebida, calcular y asociar su tipo/subcategoría
         if (catKey === "bebidas") {
             const subtype = getDrinkSubtype(nombre, desc, subcatRaw, catRaw);
             itemObj.tipo = subtype.id;
@@ -261,11 +232,9 @@ async function fetchMenuFromSheets() {
             itemObj.tipoOrden = subtype.orden;
         }
 
-        // Agregar a la categoría correspondiente
         menuOrganizado[catKey].items.push(itemObj);
     });
 
-    // Ordenar bebidas por tipo para una presentación visual armónica
     if (menuOrganizado.bebidas && menuOrganizado.bebidas.items.length > 0) {
         menuOrganizado.bebidas.items.sort((a, b) => (a.tipoOrden || 99) - (b.tipoOrden || 99));
     }
@@ -274,10 +243,7 @@ async function fetchMenuFromSheets() {
     return menuOrganizado;
 }
 
-/**
- * Envía una calificación y reseña directamente a Google Sheets mediante Google Forms
- * @param {Object} reviewData - { rating: number, ratingText: string, tags: string[], comment: string, author: string }
- */
+// Envio de calificaciones
 async function sendFeedbackReview(reviewData) {
     const now = new Date();
     const payload = {
@@ -291,7 +257,6 @@ async function sendFeedbackReview(reviewData) {
         timestamp: now.toISOString()
     };
 
-    // Guardado de respaldo local (útil para pruebas y modo offline)
     try {
         const stored = JSON.parse(localStorage.getItem('rivera_reviews_backup') || '[]');
         stored.unshift(payload);
@@ -300,7 +265,6 @@ async function sendFeedbackReview(reviewData) {
         console.warn("No se pudo guardar copia local en localStorage:", e);
     }
 
-    // Enviar en segundo plano a Google Forms (se guarda automáticamente en Google Sheets)
     if (GOOGLE_FORM_ACTION_URL) {
         try {
             const formData = new URLSearchParams();
@@ -325,4 +289,3 @@ async function sendFeedbackReview(reviewData) {
 
     return { success: true, payload };
 }
-
