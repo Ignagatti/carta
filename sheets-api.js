@@ -60,6 +60,32 @@ function buildWhatsAppLink(categoryKey) {
     return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(mensaje)}`;
 }
 
+function formatPromoBadge(tag) {
+    if (!tag) return 'PROMO';
+    const clean = String(tag).trim();
+    const lower = clean.toLowerCase();
+    
+    if (lower.includes('2x1') || lower.includes('2 x 1') || lower.includes('dos por uno')) {
+        return lower.includes('promo') ? 'PROMO 2X1' : '2X1';
+    }
+    if (lower.includes('3x2') || lower.includes('3 x 2') || lower.includes('tres por dos')) {
+        return lower.includes('promo') ? 'PROMO 3X2' : '3X2';
+    }
+    if (lower.includes('happy hour')) {
+        return 'HAPPY HOUR';
+    }
+    if (lower.includes('combo')) {
+        return clean.toUpperCase();
+    }
+    if (lower.includes('oferta')) {
+        return clean.toUpperCase();
+    }
+    if (lower === 'promo' || lower === 'promos' || lower === 'promocion' || lower === 'promoción') {
+        return 'PROMO';
+    }
+    return clean.toUpperCase();
+}
+
 // Clasificacion automatica de bebidas (con prioridad para promos)
 function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
     if (subcatColValue && subcatColValue.trim()) {
@@ -234,15 +260,19 @@ async function fetchMenuFromSheets() {
         const lowerNombre = nombre.toLowerCase();
         const lowerDesc = desc.toLowerCase();
         const lowerCat = catRaw.toLowerCase();
+        const combinedText = `${lowerCat} ${lowerSubcat} ${lowerNombre} ${lowerDesc}`;
 
         const isPromoKeyword = (text) => (
             text.includes("promo") ||
             text.includes("2x1") ||
+            text.includes("2 x 1") ||
             text.includes("3x2") ||
+            text.includes("3 x 2") ||
             text.includes("combo") ||
             text.includes("oferta") ||
             text.includes("descuento") ||
-            text.includes("precio especial")
+            text.includes("precio especial") ||
+            text.includes("happy hour")
         );
 
         const isPromo = (
@@ -254,18 +284,21 @@ async function fetchMenuFromSheets() {
 
         // Detectar etiqueta exacta para la promo (ej: "Promo 2x1", "2x1", "Combo", etc.)
         let promoTag = "";
-        if (cleanSubcat) {
+        if (cleanSubcat && !["promo", "promos", "promocion", "promoción", "promociones", "oferta", "ofertas"].includes(lowerSubcat)) {
+            // Subcategoría específica ingresada en el sheet (ej: "Promo 2x1", "2x1", "Combo", "Happy Hour")
             promoTag = cleanSubcat;
-        } else if (lowerNombre.includes("2x1") || lowerDesc.includes("2x1")) {
-            promoTag = "2x1";
-        } else if (lowerNombre.includes("3x2") || lowerDesc.includes("3x2")) {
-            promoTag = "3x2";
-        } else if (lowerNombre.includes("combo") || lowerDesc.includes("combo")) {
-            promoTag = "Combo";
-        } else if (lowerNombre.includes("oferta") || lowerDesc.includes("oferta")) {
-            promoTag = "Oferta";
+        } else if (combinedText.includes("2x1") || combinedText.includes("2 x 1") || combinedText.includes("dos por uno")) {
+            promoTag = (cleanSubcat && cleanSubcat.toLowerCase().includes("2x1")) ? cleanSubcat : "Promo 2x1";
+        } else if (combinedText.includes("3x2") || combinedText.includes("3 x 2") || combinedText.includes("tres por dos")) {
+            promoTag = (cleanSubcat && cleanSubcat.toLowerCase().includes("3x2")) ? cleanSubcat : "Promo 3x2";
+        } else if (combinedText.includes("happy hour")) {
+            promoTag = "Happy Hour";
+        } else if (combinedText.includes("combo")) {
+            promoTag = (cleanSubcat && cleanSubcat.toLowerCase().includes("combo")) ? cleanSubcat : "Combo";
+        } else if (combinedText.includes("oferta")) {
+            promoTag = (cleanSubcat && cleanSubcat.toLowerCase().includes("oferta")) ? cleanSubcat : "Oferta";
         } else if (isPromo) {
-            promoTag = "Promo";
+            promoTag = cleanSubcat || "Promo";
         }
 
         const itemObj = {

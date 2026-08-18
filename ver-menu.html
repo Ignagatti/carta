@@ -241,15 +241,15 @@
         }
 
         .menu-item-row.is-promo-card {
-            background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
-            border: 1.5px solid #f59e0b;
-            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
+            background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+            border: 1.5px solid var(--accent-blue);
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.12);
         }
 
         .menu-item-row.is-promo-card:hover {
-            border-color: #d97706;
-            background: #fffdf5;
-            box-shadow: 0 6px 18px rgba(245, 158, 11, 0.25);
+            border-color: #0284c7;
+            background: #e0f2fe;
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.2);
         }
 
         .item-info {
@@ -274,15 +274,16 @@
         .promo-tag-pill {
             display: inline-flex;
             align-items: center;
-            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            background: var(--primary-navy);
             color: #ffffff;
             font-size: 0.68rem;
             font-weight: 800;
-            padding: 3px 9px;
-            border-radius: 999px;
-            text-transform: uppercase;
+            padding: 3px 8px;
+            border-radius: 5px;
             letter-spacing: 0.5px;
-            box-shadow: 0 2px 6px rgba(234, 88, 12, 0.3);
+            text-transform: uppercase;
+            line-height: 1;
+            white-space: nowrap;
         }
 
         .item-desc {
@@ -304,9 +305,9 @@
         }
 
         .is-promo-card .item-price {
-            color: #b45309;
-            background: #fef3c7;
-            border-color: #fde68a;
+            color: var(--accent-blue);
+            background: var(--light-blue-bg);
+            border-color: var(--light-blue-border);
         }
 
         .drink-filter-container {
@@ -365,16 +366,16 @@
         }
 
         .drink-pill.is-promo-pill {
-            background: #fef3c7;
-            border-color: #fde68a;
-            color: #92400e;
+            background: var(--light-blue-bg);
+            border-color: var(--light-blue-border);
+            color: var(--light-blue-text);
         }
 
         .drink-pill.is-promo-pill.active {
-            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
-            border-color: #ea580c;
+            background: var(--primary-navy);
+            border-color: var(--primary-navy);
             color: #ffffff;
-            box-shadow: 0 3px 12px rgba(234, 88, 12, 0.35);
+            box-shadow: 0 3px 12px rgba(12, 35, 64, 0.25);
         }
 
         .drink-pill-count {
@@ -537,26 +538,27 @@
             position: fixed;
             bottom: 84px;
             right: 24px;
-            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            background: var(--primary-navy);
             color: #ffffff;
-            padding: 10px 18px;
+            padding: 10px 20px;
             border-radius: 9999px;
             display: none;
             align-items: center;
             gap: 8px;
             font-size: 0.85rem;
-            font-weight: 800;
+            font-weight: 700;
             letter-spacing: 0.3px;
-            box-shadow: 0 4px 16px rgba(234, 88, 12, 0.35);
+            box-shadow: 0 4px 16px rgba(12, 35, 64, 0.25);
             z-index: 998;
             cursor: pointer;
-            border: none;
-            transition: all 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid var(--accent-blue);
+            transition: all 0.22s ease;
         }
 
         .btn-floating-promo:hover {
-            transform: translateY(-3px) scale(1.04);
-            box-shadow: 0 8px 22px rgba(234, 88, 12, 0.5);
+            transform: translateY(-3px);
+            background: var(--accent-blue);
+            box-shadow: 0 8px 22px rgba(2, 132, 199, 0.35);
         }
 
         /* Modal Pop-up de Promos */
@@ -585,12 +587,12 @@
 
         .promo-modal-card {
             background: #ffffff;
-            border-radius: 24px;
-            max-width: 470px;
+            border-radius: 20px;
+            max-width: 460px;
             width: 100%;
-            padding: 28px 24px 24px;
-            box-shadow: 0 20px 40px rgba(12, 35, 64, 0.25);
-            border: 2px solid #fef3c7;
+            padding: 28px 22px 22px;
+            box-shadow: 0 20px 40px rgba(12, 35, 64, 0.2);
+            border: 1px solid var(--border-card);
             position: relative;
             text-align: center;
             transform: scale(0.92) translateY(10px);
@@ -608,8 +610,8 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 6px;
-            background: linear-gradient(90deg, #f59e0b, #ea580c, #0284c7);
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--primary-navy));
         }
 
         .promo-close-btn {
@@ -638,27 +640,28 @@
         .promo-modal-badge {
             display: inline-flex;
             align-items: center;
-            background: linear-gradient(135deg, #fef3c7 0%, #fee2e2 100%);
-            border: 1px solid #fde68a;
-            color: #b45309;
-            font-size: 0.78rem;
-            font-weight: 800;
-            padding: 6px 14px;
+            background: var(--light-blue-bg);
+            border: 1px solid var(--light-blue-border);
+            color: var(--light-blue-text);
+            font-size: 0.76rem;
+            font-weight: 700;
+            padding: 5px 14px;
             border-radius: 999px;
             letter-spacing: 0.5px;
+            text-transform: uppercase;
             margin-bottom: 12px;
         }
 
         .promo-modal-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.45rem;
+            font-size: 1.4rem;
             font-weight: 900;
             color: var(--primary-navy);
             margin-bottom: 8px;
         }
 
         .promo-modal-desc {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: var(--text-muted);
             line-height: 1.45;
             margin-bottom: 18px;
@@ -672,14 +675,14 @@
             max-height: 250px;
             overflow-y: auto;
             text-align: left;
-            padding: 4px;
+            padding: 2px;
         }
 
         .promo-preview-item {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             border-radius: 12px;
-            padding: 11px 14px;
+            padding: 12px 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -691,37 +694,46 @@
         }
 
         .promo-preview-item:hover {
-            background: #fef3c7;
-            border-color: #f59e0b;
+            background: #f0f9ff;
+            border-color: #93c5fd;
             transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(245, 158, 11, 0.15);
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1);
         }
 
         .promo-preview-info {
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 4px;
             flex: 1;
         }
 
+        .promo-preview-top-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 2px;
+        }
+
         .promo-preview-cat {
-            font-size: 0.7rem;
-            font-weight: 800;
-            color: #b45309;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .promo-preview-name {
             font-family: 'Outfit', sans-serif;
-            font-size: 0.96rem;
+            font-size: 1rem;
             font-weight: 800;
             color: var(--primary-navy);
+            line-height: 1.25;
         }
 
         .promo-preview-desc {
-            font-size: 0.78rem;
-            color: #78350f;
+            font-size: 0.8rem;
+            color: var(--text-muted);
             line-height: 1.35;
         }
 
@@ -729,38 +741,39 @@
             font-family: 'Outfit', sans-serif;
             font-size: 0.95rem;
             font-weight: 800;
-            color: #b45309;
-            background: #ffffff;
-            border: 1px solid #fde68a;
-            padding: 5px 11px;
+            color: var(--accent-blue);
+            background: var(--light-blue-bg);
+            border: 1px solid var(--light-blue-border);
+            padding: 6px 12px;
             border-radius: 8px;
             white-space: nowrap;
         }
 
         .promo-cta-btn {
-            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+            background: var(--primary-navy);
             color: #ffffff;
-            border: none;
-            border-radius: 14px;
-            padding: 14px 22px;
+            border: 1px solid var(--primary-navy);
+            border-radius: 12px;
+            padding: 13px 20px;
             font-family: 'Outfit', sans-serif;
-            font-size: 1rem;
-            font-weight: 800;
+            font-size: 0.95rem;
+            font-weight: 700;
             text-decoration: none;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            box-shadow: 0 6px 18px rgba(234, 88, 12, 0.35);
+            box-shadow: 0 4px 14px rgba(12, 35, 64, 0.2);
             cursor: pointer;
-            transition: all 0.22s ease;
-            margin-bottom: 10px;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
         }
 
         .promo-cta-btn:hover {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
             transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(234, 88, 12, 0.45);
-            filter: brightness(1.05);
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.3);
         }
 
         .promo-secondary-btn {
@@ -993,7 +1006,7 @@
     <div id="promo-modal" class="promo-modal-backdrop" onclick="handleBackdropClick(event)">
         <div class="promo-modal-card">
             <button type="button" class="promo-close-btn" onclick="closePromoModal()" title="Cerrar">✕</button>
-            <div class="promo-modal-badge">Promociones</div>
+            <div class="promo-modal-badge" id="promo-modal-badge-top">Promociones</div>
             <h3 class="promo-modal-title">Promociones Destacadas</h3>
             <p class="promo-modal-desc">Aprovechá los mejores precios y promociones especiales por tiempo limitado en Rivera Club.</p>
             
@@ -1001,7 +1014,7 @@
 
             <button type="button" class="promo-cta-btn" id="btn-promo-cta" onclick="goToFirstPromo()">
                 <span>Ver Promociones</span>
-                <span>➜</span>
+                <span>→</span>
             </button>
             <button type="button" class="promo-secondary-btn" onclick="closePromoModal()">Continuar al menú</button>
         </div>
@@ -1037,7 +1050,7 @@
 
         function createItemRow(item) {
             const isPromo = item.isPromo || item.tipo === 'promos' || Boolean(item.promoTag);
-            const tagText = (item.promoTag || 'PROMO').toUpperCase();
+            const tagText = typeof formatPromoBadge === 'function' ? formatPromoBadge(item.promoTag || item.tipoNombre || 'PROMO') : (item.promoTag || 'PROMO').toUpperCase();
             const row = document.createElement('div');
             row.className = `menu-item-row ${isPromo ? 'is-promo-card' : ''}`;
             row.innerHTML = `
@@ -1103,9 +1116,9 @@
                         const headerEl = document.createElement('div');
                         headerEl.className = 'type-section-header';
                         headerEl.innerHTML = `
-                            <span class="type-section-title" style="${isPromoGroup ? 'color: #b45309;' : ''}">${group.info.nombre}</span>
-                            <div class="type-section-line" style="${isPromoGroup ? 'background: linear-gradient(90deg, #fde68a 0%, rgba(253, 230, 138, 0.05) 100%);' : ''}"></div>
-                            <span class="type-section-badge" style="${isPromoGroup ? 'background: #fef3c7; border-color: #fde68a; color: #92400e;' : ''}">${group.items.length} ${group.items.length === 1 ? 'opción' : 'opciones'}</span>
+                            <span class="type-section-title" style="${isPromoGroup ? 'color: var(--accent-blue); font-weight: 800;' : ''}">${group.info.nombre}</span>
+                            <div class="type-section-line" style="${isPromoGroup ? 'background: linear-gradient(90deg, var(--light-blue-border) 0%, rgba(147, 197, 253, 0.05) 100%);' : ''}"></div>
+                            <span class="type-section-badge" style="${isPromoGroup ? 'background: var(--light-blue-bg); border-color: var(--light-blue-border); color: var(--light-blue-text);' : ''}">${group.items.length} ${group.items.length === 1 ? 'opción' : 'opciones'}</span>
                         `;
                         sectionEl.appendChild(headerEl);
 
@@ -1134,9 +1147,9 @@
                     headerEl.className = 'type-section-header';
                     headerEl.style.marginBottom = '6px';
                     headerEl.innerHTML = `
-                        <span class="type-section-title" style="${isPromoGroup ? 'color: #b45309;' : ''}">${firstItem.tipoNombre || 'Variedad'}</span>
-                        <div class="type-section-line" style="${isPromoGroup ? 'background: linear-gradient(90deg, #fde68a 0%, rgba(253, 230, 138, 0.05) 100%);' : ''}"></div>
-                        <span class="type-section-badge" style="${isPromoGroup ? 'background: #fef3c7; border-color: #fde68a; color: #92400e;' : ''}">${filteredItems.length} ${filteredItems.length === 1 ? 'opción' : 'opciones'}</span>
+                        <span class="type-section-title" style="${isPromoGroup ? 'color: var(--accent-blue); font-weight: 800;' : ''}">${firstItem.tipoNombre || 'Variedad'}</span>
+                        <div class="type-section-line" style="${isPromoGroup ? 'background: linear-gradient(90deg, var(--light-blue-border) 0%, rgba(147, 197, 253, 0.05) 100%);' : ''}"></div>
+                        <span class="type-section-badge" style="${isPromoGroup ? 'background: var(--light-blue-bg); border-color: var(--light-blue-border); color: var(--light-blue-text);' : ''}">${filteredItems.length} ${filteredItems.length === 1 ? 'opción' : 'opciones'}</span>
                     `;
                     listContainer.appendChild(headerEl);
 
@@ -1240,19 +1253,35 @@
             }
 
             currentLoadedPromos = promos;
+
+            // Actualizar badge superior si hay 2x1
+            const badgeTop = document.getElementById('promo-modal-badge-top');
+            if (badgeTop) {
+                const has2x1 = promos.some(p => 
+                    (p.promoTag && p.promoTag.toLowerCase().includes('2x1')) || 
+                    (p.nombre && p.nombre.toLowerCase().includes('2x1'))
+                );
+                badgeTop.textContent = has2x1 ? 'Promociones • 2x1' : 'Promociones';
+            }
+
             previewContainer.innerHTML = '';
             promos.slice(0, 5).forEach(item => {
                 const targetUrl = item.categoriaKey === 'bebidas' 
                     ? 'ver-menu.html?cat=bebidas&filter=promos' 
                     : `ver-menu.html?cat=${encodeURIComponent(item.categoriaKey)}`;
 
-                const badgeText = (item.promoTag || 'PROMO').toUpperCase();
+                const rawTag = item.promoTag || (item.tipo === 'promos' ? item.tipoNombre : '') || 'PROMO';
+                const formattedBadge = typeof formatPromoBadge === 'function' ? formatPromoBadge(rawTag) : rawTag.toUpperCase();
+
                 const el = document.createElement('a');
                 el.href = targetUrl;
                 el.className = 'promo-preview-item';
                 el.innerHTML = `
                     <div class="promo-preview-info">
-                        <span class="promo-preview-cat">${item.categoriaTitulo || item.categoriaKey} • ${badgeText}</span>
+                        <div class="promo-preview-top-row">
+                            <span class="promo-preview-cat">${item.categoriaTitulo || item.categoriaKey}</span>
+                            <span class="promo-tag-pill">${formattedBadge}</span>
+                        </div>
                         <div class="promo-preview-name">${item.nombre}</div>
                         ${item.desc ? `<div class="promo-preview-desc">${item.desc}</div>` : ''}
                     </div>
