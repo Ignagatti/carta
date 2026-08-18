@@ -90,7 +90,7 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
         "negroni", "branca", "jagermeister", "carpano", "cinzano", "martini", "licor", "caipiriña", "caipiroska"
     ];
     if (tragoKeywords.some(kw => text.includes(kw))) {
-        return { id: "tragos", nombre: "Tragos y Coctelería", icon: "", orden: 4 };
+        return { id: "tragos", nombre: "Tragos ", icon: "", orden: 4 };
     }
 
     const vinoKeywords = [
