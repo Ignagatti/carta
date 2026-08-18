@@ -66,7 +66,7 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
         const cleanSub = subcatColValue.trim();
         const lower = cleanSub.toLowerCase();
         if (lower.includes("promo") || lower.includes("oferta") || lower.includes("combo") || lower.includes("2x1") || lower.includes("descuento")) {
-            return { id: "promos", nombre: "🔥 Promociones", icon: "🔥", orden: 0 };
+            return { id: "promos", nombre: "Promociones", icon: "", orden: 0 };
         }
         if (lower.includes("cervez")) return { id: "cervezas", nombre: "Cervezas", icon: "", orden: 1 };
         if (lower.includes("gaseos") || lower.includes("saboriz")) return { id: "gaseosas", nombre: "Gaseosas y Saborizadas", icon: "", orden: 2 };
@@ -79,7 +79,7 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
     if (catRaw) {
         const lowerCat = catRaw.toLowerCase();
         if (lowerCat.includes("promo") || lowerCat.includes("oferta") || lowerCat.includes("combo") || lowerCat.includes("2x1") || lowerCat.includes("descuento")) {
-            return { id: "promos", nombre: "🔥 Promociones", icon: "🔥", orden: 0 };
+            return { id: "promos", nombre: "Promociones", icon: "", orden: 0 };
         }
         if (lowerCat.includes("cervez")) return { id: "cervezas", nombre: "Cervezas", icon: "", orden: 1 };
         if (lowerCat.includes("gaseos")) return { id: "gaseosas", nombre: "Gaseosas y Saborizadas", icon: "", orden: 2 };
@@ -92,7 +92,7 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
 
     const promoKeywords = ["promo", "promoción", "promocion", "2x1", "combo", "oferta", "descuento", "precio especial"];
     if (promoKeywords.some(kw => text.includes(kw))) {
-        return { id: "promos", nombre: "🔥 Promociones", icon: "🔥", orden: 0 };
+        return { id: "promos", nombre: "Promociones", icon: "", orden: 0 };
     }
 
     const tragoKeywords = [
@@ -261,7 +261,7 @@ async function fetchMenuFromSheets() {
         menuOrganizado[catKey].items.push(itemObj);
     });
 
-    // Recolectar promociones para pop-up y destacar
+    // Recolectar unicamente las promociones reales existentes en el Google Sheet
     const allPromos = [];
     Object.keys(menuOrganizado).forEach(key => {
         if (!key.startsWith('_') && menuOrganizado[key].items) {
@@ -277,52 +277,7 @@ async function fetchMenuFromSheets() {
         }
     });
 
-    // Promos destacadas de bebidas (si el excel aún no tiene filas de promo cargadas)
-    if (allPromos.length === 0 && menuOrganizado.bebidas) {
-        const demoPromos = [
-            {
-                nombre: "2x1 Gin Tonic Clásico",
-                desc: "Promoción especial de la casa (2 unidades)",
-                precio: "$9.500",
-                tipo: "promos",
-                tipoNombre: "🔥 Promociones",
-                tipoIcon: "🔥",
-                tipoOrden: 0,
-                isPromo: true
-            },
-            {
-                nombre: "Combo Fernet Branca + Coca-Cola",
-                desc: "Jarra para compartir + hielo",
-                precio: "$11.000",
-                tipo: "promos",
-                tipoNombre: "🔥 Promociones",
-                tipoIcon: "🔥",
-                tipoOrden: 0,
-                isPromo: true
-            },
-            {
-                nombre: "Promo 3 Lisos Santa Fe",
-                desc: "Cerveza tirada bien fría",
-                precio: "$6.500",
-                tipo: "promos",
-                tipoNombre: "🔥 Promociones",
-                tipoIcon: "🔥",
-                tipoOrden: 0,
-                isPromo: true
-            }
-        ];
-
-        demoPromos.forEach(p => {
-            menuOrganizado.bebidas.items.unshift(p);
-            allPromos.push({
-                ...p,
-                categoriaKey: "bebidas",
-                categoriaTitulo: "BEBIDAS"
-            });
-        });
-    }
-
-    // Ordenar bebidas poniendo promos en primer lugar
+    // Ordenar bebidas poniendo las promos primero
     if (menuOrganizado.bebidas && menuOrganizado.bebidas.items.length > 0) {
         menuOrganizado.bebidas.items.sort((a, b) => {
             const ordenA = (a.isPromo || a.tipo === "promos") ? 0 : (a.tipoOrden || 99);
