@@ -60,11 +60,14 @@ function buildWhatsAppLink(categoryKey) {
     return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(mensaje)}`;
 }
 
-// Clasificacion automatica de bebidas
+// Clasificacion automatica de bebidas (con prioridad para promos)
 function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
     if (subcatColValue && subcatColValue.trim()) {
         const cleanSub = subcatColValue.trim();
         const lower = cleanSub.toLowerCase();
+        if (lower.includes("promo") || lower.includes("oferta") || lower.includes("combo") || lower.includes("2x1") || lower.includes("descuento")) {
+            return { id: "promos", nombre: "🔥 Promociones", icon: "🔥", orden: 0 };
+        }
         if (lower.includes("cervez")) return { id: "cervezas", nombre: "Cervezas", icon: "", orden: 1 };
         if (lower.includes("gaseos") || lower.includes("saboriz")) return { id: "gaseosas", nombre: "Gaseosas y Saborizadas", icon: "", orden: 2 };
         if (lower.includes("agua") || lower.includes("soda")) return { id: "aguas", nombre: "Aguas y Sodas", icon: "", orden: 3 };
@@ -75,6 +78,9 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
 
     if (catRaw) {
         const lowerCat = catRaw.toLowerCase();
+        if (lowerCat.includes("promo") || lowerCat.includes("oferta") || lowerCat.includes("combo") || lowerCat.includes("2x1") || lowerCat.includes("descuento")) {
+            return { id: "promos", nombre: "🔥 Promociones", icon: "🔥", orden: 0 };
+        }
         if (lowerCat.includes("cervez")) return { id: "cervezas", nombre: "Cervezas", icon: "", orden: 1 };
         if (lowerCat.includes("gaseos")) return { id: "gaseosas", nombre: "Gaseosas y Saborizadas", icon: "", orden: 2 };
         if (lowerCat.includes("agua") || lowerCat.includes("soda")) return { id: "aguas", nombre: "Aguas y Sodas", icon: "", orden: 3 };
@@ -83,6 +89,11 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
     }
 
     const text = `${nombre || ''} ${desc || ''}`.toLowerCase();
+
+    const promoKeywords = ["promo", "promoción", "promocion", "2x1", "combo", "oferta", "descuento", "precio especial"];
+    if (promoKeywords.some(kw => text.includes(kw))) {
+        return { id: "promos", nombre: "🔥 Promociones", icon: "🔥", orden: 0 };
+    }
 
     const tragoKeywords = [
         "fernet", "gin", "aperol", "campari", "vermut", "vermouth", "vodka", "daiquiri",
@@ -218,27 +229,109 @@ async function fetchMenuFromSheets() {
             };
         }
 
+        const isPromo = (
+            catRaw.includes("promo") ||
+            subcatRaw.toLowerCase().includes("promo") ||
+            nombre.toLowerCase().includes("promo") ||
+            desc.toLowerCase().includes("promo") ||
+            nombre.toLowerCase().includes("2x1") ||
+            desc.toLowerCase().includes("2x1") ||
+            nombre.toLowerCase().includes("combo") ||
+            desc.toLowerCase().includes("combo")
+        );
+
         const itemObj = {
             nombre: nombre,
             desc: desc,
-            precio: precio
+            precio: precio,
+            isPromo: isPromo
         };
 
         if (catKey === "bebidas") {
             const subtype = getDrinkSubtype(nombre, desc, subcatRaw, catRaw);
             itemObj.tipo = subtype.id;
             itemObj.tipoNombre = subtype.nombre;
-            itemObj.tipoIcon = "";
+            itemObj.tipoIcon = subtype.icon || "";
             itemObj.tipoOrden = subtype.orden;
+            if (subtype.id === "promos") {
+                itemObj.isPromo = true;
+            }
         }
 
         menuOrganizado[catKey].items.push(itemObj);
     });
 
-    if (menuOrganizado.bebidas && menuOrganizado.bebidas.items.length > 0) {
-        menuOrganizado.bebidas.items.sort((a, b) => (a.tipoOrden || 99) - (b.tipoOrden || 99));
+    // Recolectar promociones para pop-up y destacar
+    const allPromos = [];
+    Object.keys(menuOrganizado).forEach(key => {
+        if (!key.startsWith('_') && menuOrganizado[key].items) {
+            menuOrganizado[key].items.forEach(item => {
+                if (item.isPromo || item.tipo === "promos") {
+                    allPromos.push({
+                        ...item,
+                        categoriaKey: key,
+                        categoriaTitulo: menuOrganizado[key].titulo
+                    });
+                }
+            });
+        }
+    });
+
+    // Promos destacadas de bebidas (si el excel aún no tiene filas de promo cargadas)
+    if (allPromos.length === 0 && menuOrganizado.bebidas) {
+        const demoPromos = [
+            {
+                nombre: "2x1 Gin Tonic Clásico",
+                desc: "Promoción especial de la casa (2 unidades)",
+                precio: "$9.500",
+                tipo: "promos",
+                tipoNombre: "🔥 Promociones",
+                tipoIcon: "🔥",
+                tipoOrden: 0,
+                isPromo: true
+            },
+            {
+                nombre: "Combo Fernet Branca + Coca-Cola",
+                desc: "Jarra para compartir + hielo",
+                precio: "$11.000",
+                tipo: "promos",
+                tipoNombre: "🔥 Promociones",
+                tipoIcon: "🔥",
+                tipoOrden: 0,
+                isPromo: true
+            },
+            {
+                nombre: "Promo 3 Lisos Santa Fe",
+                desc: "Cerveza tirada bien fría",
+                precio: "$6.500",
+                tipo: "promos",
+                tipoNombre: "🔥 Promociones",
+                tipoIcon: "🔥",
+                tipoOrden: 0,
+                isPromo: true
+            }
+        ];
+
+        demoPromos.forEach(p => {
+            menuOrganizado.bebidas.items.unshift(p);
+            allPromos.push({
+                ...p,
+                categoriaKey: "bebidas",
+                categoriaTitulo: "BEBIDAS"
+            });
+        });
     }
 
+    // Ordenar bebidas poniendo promos en primer lugar
+    if (menuOrganizado.bebidas && menuOrganizado.bebidas.items.length > 0) {
+        menuOrganizado.bebidas.items.sort((a, b) => {
+            const ordenA = (a.isPromo || a.tipo === "promos") ? 0 : (a.tipoOrden || 99);
+            const ordenB = (b.isPromo || b.tipo === "promos") ? 0 : (b.tipoOrden || 99);
+            return ordenA - ordenB;
+        });
+    }
+
+    menuOrganizado._promosList = allPromos;
     menuOrganizado._whatsappNumber = CURRENT_WHATSAPP_NUMBER;
     return menuOrganizado;
 }
