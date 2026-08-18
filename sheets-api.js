@@ -65,8 +65,8 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
     if (subcatColValue && subcatColValue.trim()) {
         const cleanSub = subcatColValue.trim();
         const lower = cleanSub.toLowerCase();
-        if (lower.includes("promo") || lower.includes("oferta") || lower.includes("combo") || lower.includes("2x1") || lower.includes("descuento")) {
-            return { id: "promos", nombre: "Promociones", icon: "", orden: 0 };
+        if (lower.includes("promo") || lower.includes("oferta") || lower.includes("combo") || lower.includes("2x1") || lower.includes("3x2") || lower.includes("descuento")) {
+            return { id: "promos", nombre: cleanSub || "Promociones", icon: "", orden: 0 };
         }
         if (lower.includes("cervez")) return { id: "cervezas", nombre: "Cervezas", icon: "", orden: 1 };
         if (lower.includes("gaseos") || lower.includes("saboriz")) return { id: "gaseosas", nombre: "Gaseosas y Saborizadas", icon: "", orden: 2 };
@@ -78,7 +78,7 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
 
     if (catRaw) {
         const lowerCat = catRaw.toLowerCase();
-        if (lowerCat.includes("promo") || lowerCat.includes("oferta") || lowerCat.includes("combo") || lowerCat.includes("2x1") || lowerCat.includes("descuento")) {
+        if (lowerCat.includes("promo") || lowerCat.includes("oferta") || lowerCat.includes("combo") || lowerCat.includes("2x1") || lowerCat.includes("3x2") || lowerCat.includes("descuento")) {
             return { id: "promos", nombre: "Promociones", icon: "", orden: 0 };
         }
         if (lowerCat.includes("cervez")) return { id: "cervezas", nombre: "Cervezas", icon: "", orden: 1 };
@@ -90,7 +90,7 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
 
     const text = `${nombre || ''} ${desc || ''}`.toLowerCase();
 
-    const promoKeywords = ["promo", "promoción", "promocion", "2x1", "combo", "oferta", "descuento", "precio especial"];
+    const promoKeywords = ["promo", "promoción", "promocion", "2x1", "3x2", "combo", "oferta", "descuento", "precio especial"];
     if (promoKeywords.some(kw => text.includes(kw))) {
         return { id: "promos", nombre: "Promociones", icon: "", orden: 0 };
     }
@@ -229,27 +229,51 @@ async function fetchMenuFromSheets() {
             };
         }
 
-        // Deteccion universal de promocion para cualquier categoria (Pizzas, Bebidas, Parrillada, Miércoles)
-        const isPromo = (
-            catRaw.includes("promo") ||
-            (subcatRaw && subcatRaw.toLowerCase().includes("promo")) ||
-            nombre.toLowerCase().includes("promo") ||
-            desc.toLowerCase().includes("promo") ||
-            nombre.toLowerCase().includes("2x1") ||
-            desc.toLowerCase().includes("2x1") ||
-            nombre.toLowerCase().includes("combo") ||
-            desc.toLowerCase().includes("combo") ||
-            nombre.toLowerCase().includes("oferta") ||
-            desc.toLowerCase().includes("oferta") ||
-            nombre.toLowerCase().includes("descuento") ||
-            desc.toLowerCase().includes("descuento")
+        const cleanSubcat = subcatRaw ? subcatRaw.trim() : "";
+        const lowerSubcat = cleanSubcat.toLowerCase();
+        const lowerNombre = nombre.toLowerCase();
+        const lowerDesc = desc.toLowerCase();
+        const lowerCat = catRaw.toLowerCase();
+
+        const isPromoKeyword = (text) => (
+            text.includes("promo") ||
+            text.includes("2x1") ||
+            text.includes("3x2") ||
+            text.includes("combo") ||
+            text.includes("oferta") ||
+            text.includes("descuento") ||
+            text.includes("precio especial")
         );
+
+        const isPromo = (
+            isPromoKeyword(lowerCat) ||
+            isPromoKeyword(lowerSubcat) ||
+            isPromoKeyword(lowerNombre) ||
+            isPromoKeyword(lowerDesc)
+        );
+
+        // Detectar etiqueta exacta para la promo (ej: "Promo 2x1", "2x1", "Combo", etc.)
+        let promoTag = "";
+        if (cleanSubcat) {
+            promoTag = cleanSubcat;
+        } else if (lowerNombre.includes("2x1") || lowerDesc.includes("2x1")) {
+            promoTag = "2x1";
+        } else if (lowerNombre.includes("3x2") || lowerDesc.includes("3x2")) {
+            promoTag = "3x2";
+        } else if (lowerNombre.includes("combo") || lowerDesc.includes("combo")) {
+            promoTag = "Combo";
+        } else if (lowerNombre.includes("oferta") || lowerDesc.includes("oferta")) {
+            promoTag = "Oferta";
+        } else if (isPromo) {
+            promoTag = "Promo";
+        }
 
         const itemObj = {
             nombre: nombre,
             desc: desc,
             precio: precio,
-            isPromo: isPromo
+            isPromo: isPromo,
+            promoTag: promoTag
         };
 
         if (catKey === "bebidas") {
@@ -260,6 +284,7 @@ async function fetchMenuFromSheets() {
             itemObj.tipoOrden = subtype.orden;
             if (subtype.id === "promos") {
                 itemObj.isPromo = true;
+                if (!itemObj.promoTag) itemObj.promoTag = subtype.nombre;
             }
         }
 
