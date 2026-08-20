@@ -887,61 +887,67 @@
             });
         }
 
-        // Inicializacion de la carta
-        async function initMenu() {
-            try {
-                const menuData = await fetchMenuFromSheets();
-                const categoryKeys = Object.keys(menuData).filter(k => !k.startsWith('_'));
+        // Renderizado de datos del menu
+        function renderMenuData(menuData) {
+            const categoryKeys = Object.keys(menuData).filter(k => !k.startsWith('_'));
 
-                if (categoryKeys.length === 0) {
-                    document.getElementById('items-list').innerHTML = '<div class="loading-shimmer">No hay productos cargados en la carta.</div>';
-                    return;
-                }
-
-                // Si la categoría pedida es alias o variante (ej. cocteleria o tragos) y existe bebidas
-                if (selectedCategory && (selectedCategory.includes("coctel") || selectedCategory.includes("trag")) && menuData["bebidas"]) {
-                    selectedCategory = "bebidas";
-                }
-
-                if (!selectedCategory || !menuData[selectedCategory]) {
-                    selectedCategory = categoryKeys[0];
-                }
-
-                const wspBtn = document.getElementById('btn-wsp-flotante');
-                if (wspBtn) {
-                    wspBtn.href = buildWhatsAppLink(selectedCategory);
-                }
-
-                const nav = document.getElementById('nav-categories');
-                nav.innerHTML = '';
-                categoryKeys.forEach(key => {
-                    const cat = menuData[key];
-                    const pill = document.createElement('a');
-                    pill.href = `ver-menu.html?cat=${encodeURIComponent(key)}`;
-                    pill.className = `nav-pill ${key === selectedCategory ? 'active' : ''}`;
-                    pill.id = `pill-${key}`;
-                    pill.textContent = cat.titulo;
-                    nav.appendChild(pill);
-                });
-
-                currentCategoryData = menuData[selectedCategory];
-                document.title = `${currentCategoryData.titulo} • Rivera Club`;
-
-                document.getElementById('cat-badge-text').textContent = currentCategoryData.tag || 'Rivera Club';
-                document.getElementById('cat-title').textContent = currentCategoryData.titulo;
-                document.getElementById('cat-sub').textContent = currentCategoryData.subtitulo || '';
-
-                activeDrinkFilter = 'all';
-                setupDrinkFilters(currentCategoryData.items || []);
-                renderCategoryItems('all');
-
-            } catch (err) {
-                console.error("Error al cargar la carta desde Google Sheets:", err);
-                document.getElementById('cat-badge-text').textContent = 'Rivera Club';
-                document.getElementById('cat-title').textContent = 'Carta no disponible';
-                document.getElementById('cat-sub').textContent = 'No se pudo sincronizar con Google Sheets';
-                document.getElementById('items-list').innerHTML = '<div class="loading-shimmer">No se pudo obtener la carta en tiempo real.<br><br><span style="font-size:0.85rem; opacity:0.8;">Por favor verifica tu conexión a internet o intenta nuevamente más tarde.</span></div>';
+            if (categoryKeys.length === 0) {
+                document.getElementById('items-list').innerHTML = '<div class="loading-shimmer">No hay productos cargados en la carta.</div>';
+                return;
             }
+
+            // Si la categoría pedida es alias o variante (ej. cocteleria o tragos) y existe bebidas
+            if (selectedCategory && (selectedCategory.includes("coctel") || selectedCategory.includes("trag")) && menuData["bebidas"]) {
+                selectedCategory = "bebidas";
+            }
+
+            if (!selectedCategory || !menuData[selectedCategory]) {
+                selectedCategory = categoryKeys[0];
+            }
+
+            const wspBtn = document.getElementById('btn-wsp-flotante');
+            if (wspBtn) {
+                wspBtn.href = buildWhatsAppLink(selectedCategory);
+            }
+
+            const nav = document.getElementById('nav-categories');
+            nav.innerHTML = '';
+            categoryKeys.forEach(key => {
+                const cat = menuData[key];
+                const pill = document.createElement('a');
+                pill.href = `ver-menu.html?cat=${encodeURIComponent(key)}`;
+                pill.className = `nav-pill ${key === selectedCategory ? 'active' : ''}`;
+                pill.id = `pill-${key}`;
+                pill.textContent = cat.titulo;
+                nav.appendChild(pill);
+            });
+
+            currentCategoryData = menuData[selectedCategory];
+            document.title = `${currentCategoryData.titulo} • Rivera Club`;
+
+            document.getElementById('cat-badge-text').textContent = currentCategoryData.tag || 'Rivera Club';
+            document.getElementById('cat-title').textContent = currentCategoryData.titulo;
+            document.getElementById('cat-sub').textContent = currentCategoryData.subtitulo || '';
+
+            activeDrinkFilter = 'all';
+            setupDrinkFilters(currentCategoryData.items || []);
+            renderCategoryItems('all');
+        }
+
+        // Inicializacion de la carta con Stale-While-Revalidate
+        function initMenu() {
+            loadMenuWithStaleWhileRevalidate(
+                (menuData) => {
+                    renderMenuData(menuData);
+                },
+                (err) => {
+                    console.error("Error al cargar la carta desde Google Sheets:", err);
+                    document.getElementById('cat-badge-text').textContent = 'Rivera Club';
+                    document.getElementById('cat-title').textContent = 'Carta no disponible';
+                    document.getElementById('cat-sub').textContent = 'No se pudo sincronizar con Google Sheets';
+                    document.getElementById('items-list').innerHTML = '<div class="loading-shimmer">No se pudo obtener la carta en tiempo real.<br><br><span style="font-size:0.85rem; opacity:0.8;">Por favor verifica tu conexión a internet o intenta nuevamente más tarde.</span></div>';
+                }
+            );
         }
 
         initMenu();

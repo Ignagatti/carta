@@ -1,5 +1,6 @@
 const GOOGLE_SHEET_ID = "1uqoV8K2FPBis51tfvNIHp917s2QecEdb2yLeeCm4yGg";
 const GOOGLE_SHEET_TAB = "";
+const GOOGLE_APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxGSFWtznXZytwO_ltEZh1Z78ag8uLqT7OGWglHWTlrX0zx5ECrmEHIwGO9FS8Z4r_A/exec";
 
 const GOOGLE_FORM_ACTION_URL = "https://docs.google.com/forms/d/e/1FAIpQLScntWPNVbd8ch5QPZvCoj8pVReXjId6caQDyIA_v91sUi9apw/formResponse";
 const GOOGLE_FORM_FIELDS = {
@@ -129,8 +130,51 @@ function getDrinkSubtype(nombre, desc, subcatColValue, catRaw) {
     return { id: "otras", nombre: "Otras Bebidas", icon: "", orden: 6 };
 }
 
+// Obtener menu desde la memoria cache local (instantaneo)
+function getCachedMenu() {
+    try {
+        const cached = localStorage.getItem('rivera_menu_cache');
+        if (cached) {
+            const parsed = JSON.parse(cached);
+            if (parsed && Object.keys(parsed).filter(k => !k.startsWith('_')).length > 0) {
+                return parsed;
+            }
+        }
+    } catch (e) {}
+    return null;
+}
+
+// Fetch con tiempo límite configurable (4.5s por defecto)
+async function fetchWithTimeout(url, timeoutMs = 4500) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+        const response = await fetch(url, { signal: controller.signal });
+        clearTimeout(timer);
+        return response;
+    } catch (err) {
+        clearTimeout(timer);
+        if (err.name === 'AbortError') {
+            throw new Error(`Timeout de conexión con Google Sheets (${timeoutMs}ms)`);
+        }
+        throw err;
+    }
+}
+
 // Carga y procesamiento del menu desde Google Sheets con fallback inteligente
 async function fetchMenuFromSheets() {
+    if (GOOGLE_APPS_SCRIPT_URL) {
+        try {
+            const scriptResult = await fetchMenuFromAppsScript();
+            if (scriptResult) {
+                console.log("Menú cargado exitosamente vía Apps Script Web App.");
+                return scriptResult;
+            }
+        } catch (scriptErr) {
+            console.warn("No se pudo cargar vía Apps Script Web App, intentando GViz y CSV:", scriptErr);
+        }
+    }
+
     if (!GOOGLE_SHEET_ID) {
         throw new Error("No se ha configurado el ID de Google Sheets");
     }
@@ -139,7 +183,7 @@ async function fetchMenuFromSheets() {
         const sheetParam = GOOGLE_SHEET_TAB ? `&sheet=${encodeURIComponent(GOOGLE_SHEET_TAB)}` : '';
         const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:json${sheetParam}&t=${new Date().getTime()}`;
 
-        const response = await fetch(url);
+        const response = await fetchWithTimeout(url, 3500);
         if (!response.ok) throw new Error("No se pudo conectar con Google Sheets");
 
         const text = await response.text();
@@ -318,7 +362,18 @@ async function fetchMenuFromSheets() {
         throw new Error("No se encontraron productos en Google Sheets");
 
     } catch (err) {
-        console.warn("No se pudo cargar desde Google Sheets en vivo, buscando copia en caché local:", err);
+        console.warn("No se pudo cargar por GViz, intentando exportación CSV directa:", err);
+        try {
+            const csvMenu = await fetchMenuFromCSV();
+            if (csvMenu) {
+                console.log("Menú recuperado exitosamente desde exportación CSV de Google Sheets.");
+                return csvMenu;
+            }
+        } catch (csvErr) {
+            console.warn("No se pudo cargar desde exportación CSV:", csvErr);
+        }
+
+        console.warn("Buscando copia en caché local (localStorage)...");
         try {
             const cached = localStorage.getItem('rivera_menu_cache');
             if (cached) {
@@ -329,7 +384,348 @@ async function fetchMenuFromSheets() {
                 }
             }
         } catch (e) {}
+
+        console.warn("Buscando respaldo estático local menu.json...");
+        const fallbackJson = await fetchFallbackMenuJson();
+        if (fallbackJson) {
+            console.log("Menú recuperado desde menu.json estático local.");
+            return fallbackJson;
+        }
+
         throw err;
+    }
+}
+
+// Parser simple de CSV
+function parseCSV(text) {
+    const lines = text.split(/\r?\n/);
+    const result = [];
+    for (let line of lines) {
+        if (!line.trim()) continue;
+        const row = [];
+        let insideQuote = false;
+        let entry = '';
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            if (char === '"') {
+                insideQuote = !insideQuote;
+            } else if (char === ',' && !insideQuote) {
+                row.push(entry.trim());
+                entry = '';
+            } else {
+                entry += char;
+            }
+        }
+        row.push(entry.trim());
+        result.push(row);
+    }
+    return result;
+}
+
+// Carga directa via exportacion CSV de Google Sheets (No sufre de inactividad de GViz)
+async function fetchMenuFromCSV() {
+    const sheetParam = GOOGLE_SHEET_TAB ? `&sheet=${encodeURIComponent(GOOGLE_SHEET_TAB)}` : '';
+    const url = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/export?format=csv${sheetParam}&t=${new Date().getTime()}`;
+
+    const response = await fetchWithTimeout(url, 3500);
+    if (!response.ok) throw new Error("No se pudo conectar con el export de CSV de Google Sheets");
+
+    const text = await response.text();
+    const rows = parseCSV(text);
+    if (rows.length < 2) throw new Error("CSV sin suficientes filas");
+
+    const headerRow = rows[0].map(c => c.toLowerCase().trim());
+    let categoriaIdx = headerRow.findIndex(c => c.includes("cat"));
+    let subcatIdx = headerRow.findIndex(c => c.includes("subcat") || c.includes("tipo") || c.includes("variedad"));
+    let nombreIdx = headerRow.findIndex(c => c.includes("nomb") || c.includes("plato") || c.includes("producto") || c.includes("item"));
+    let descIdx = headerRow.findIndex(c => c.includes("desc") || c.includes("ingred") || c.includes("detall"));
+    let precioIdx = headerRow.findIndex(c => c.includes("prec") || c.includes("valor") || c.includes("costo"));
+    let disponibleIdx = headerRow.findIndex(c => c.includes("disp") || c.includes("activo") || c.includes("habilit"));
+
+    if (categoriaIdx === -1) categoriaIdx = 0;
+    if (subcatIdx === -1) subcatIdx = 1;
+    if (nombreIdx === -1) nombreIdx = 2;
+    if (descIdx === -1) descIdx = 3;
+    if (precioIdx === -1) precioIdx = 4;
+    if (disponibleIdx === -1) disponibleIdx = 5;
+
+    const menuOrganizado = {};
+
+    for (let i = 1; i < rows.length; i++) {
+        const r = rows[i];
+        if (!r || r.length === 0) continue;
+
+        const getVal = (idx) => (idx !== -1 && r[idx] !== undefined && r[idx] !== null ? String(r[idx]).trim() : "");
+
+        const catRaw = getVal(categoriaIdx).toLowerCase().trim();
+        const subcatRaw = getVal(subcatIdx);
+        const nombre = getVal(nombreIdx);
+        const desc = getVal(descIdx);
+        const precioRaw = getVal(precioIdx);
+        const disponible = getVal(disponibleIdx).toUpperCase();
+
+        const lowerNom = nombre.toLowerCase();
+        if (lowerNom === "nombre" || lowerNom === "plato" || lowerNom === "producto" || catRaw === "categoría" || catRaw === "categoria") {
+            continue;
+        }
+
+        const rowText = `${catRaw} ${nombre} ${desc}`.toLowerCase();
+        if (rowText.includes("wsp") || rowText.includes("whatsapp") || rowText.includes("telefono") || rowText.includes("reserva") || catRaw.includes("config")) {
+            const phoneCandidate = (precioRaw || desc || nombre).replace(/[^0-9]/g, '');
+            if (phoneCandidate.length >= 8) {
+                CURRENT_WHATSAPP_NUMBER = phoneCandidate;
+            }
+            continue;
+        }
+
+        if (!nombre || disponible === "NO" || disponible === "0" || disponible === "FALSE") {
+            continue;
+        }
+
+        let catKey = catRaw || "pizzas";
+        if (
+            catKey.includes("beb") || catKey.includes("trag") || catKey.includes("coctel") ||
+            catKey.includes("cóctel") || catKey.includes("cervez") || catKey.includes("vino") ||
+            catKey.includes("gaseos") || catKey.includes("aperit") || catKey.includes("bar") || catKey.includes("licor")
+        ) {
+            catKey = "bebidas";
+        } else if (catKey.includes("mier") || catKey.includes("miér")) {
+            catKey = "miercoles";
+        } else if (catKey.includes("piz")) {
+            catKey = "pizzas";
+        } else if (catKey.includes("vier") || catKey.includes("parr") || catKey.includes("asad")) {
+            catKey = "parrillada";
+        }
+
+        if (!menuOrganizado[catKey]) {
+            const meta = CATEGORY_METADATA[catKey] || {
+                id: catKey,
+                titulo: (catRaw || catKey).toUpperCase(),
+                tag: "Menú",
+                subtitulo: "Variedades y precios actualizados",
+                fondo: "fondo.png"
+            };
+            menuOrganizado[catKey] = {
+                ...meta,
+                items: []
+            };
+        }
+
+        const itemObj = {
+            nombre: nombre,
+            desc: desc,
+            precio: precioRaw
+        };
+
+        if (catKey === "bebidas") {
+            const subtype = getDrinkSubtype(nombre, desc, subcatRaw, catRaw);
+            itemObj.tipo = subtype.id;
+            itemObj.tipoNombre = subtype.nombre;
+            itemObj.tipoIcon = "";
+            itemObj.tipoOrden = subtype.orden;
+        }
+
+        menuOrganizado[catKey].items.push(itemObj);
+    }
+
+    if (menuOrganizado.bebidas && menuOrganizado.bebidas.items.length > 0) {
+        menuOrganizado.bebidas.items.sort((a, b) => (a.tipoOrden || 99) - (b.tipoOrden || 99));
+    }
+
+    menuOrganizado._whatsappNumber = CURRENT_WHATSAPP_NUMBER;
+
+    if (Object.keys(menuOrganizado).filter(k => !k.startsWith('_')).length > 0) {
+        try {
+            localStorage.setItem('rivera_menu_cache', JSON.stringify(menuOrganizado));
+        } catch (e) {}
+        return menuOrganizado;
+    }
+
+    throw new Error("CSV sin productos válidos");
+}
+
+// Carga del menu desde Apps Script Web App
+async function fetchMenuFromAppsScript() {
+    if (!GOOGLE_APPS_SCRIPT_URL) return null;
+    const url = `${GOOGLE_APPS_SCRIPT_URL}?t=${new Date().getTime()}`;
+    const response = await fetchWithTimeout(url, 3500);
+    if (!response.ok) throw new Error("No se pudo conectar con Apps Script Web App");
+    const json = await response.json();
+    if (json && json.status === "success" && Array.isArray(json.rows) && json.rows.length > 1) {
+        return parseMatrixToMenu(json.rows);
+    }
+    throw new Error("Respuesta de Apps Script sin productos válidos");
+}
+
+// Parseador de matriz 2D de filas recibidas desde Apps Script
+function parseMatrixToMenu(rows) {
+    const headerRow = rows[0].map(c => String(c || "").toLowerCase().trim());
+    let categoriaIdx = headerRow.findIndex(c => c.includes("cat"));
+    let subcatIdx = headerRow.findIndex(c => c.includes("subcat") || c.includes("tipo") || c.includes("variedad"));
+    let nombreIdx = headerRow.findIndex(c => c.includes("nomb") || c.includes("plato") || c.includes("producto") || c.includes("item"));
+    let descIdx = headerRow.findIndex(c => c.includes("desc") || c.includes("ingred") || c.includes("detall"));
+    let precioIdx = headerRow.findIndex(c => c.includes("prec") || c.includes("valor") || c.includes("costo"));
+    let disponibleIdx = headerRow.findIndex(c => c.includes("disp") || c.includes("activo") || c.includes("habilit"));
+
+    if (categoriaIdx === -1) categoriaIdx = 0;
+    if (subcatIdx === -1) subcatIdx = 1;
+    if (nombreIdx === -1) nombreIdx = 2;
+    if (descIdx === -1) descIdx = 3;
+    if (precioIdx === -1) precioIdx = 4;
+    if (disponibleIdx === -1) disponibleIdx = 5;
+
+    const menuOrganizado = {};
+
+    for (let i = 1; i < rows.length; i++) {
+        const r = rows[i];
+        if (!r || r.length === 0) continue;
+
+        const getVal = (idx) => (idx !== -1 && r[idx] !== undefined && r[idx] !== null ? String(r[idx]).trim() : "");
+
+        const catRaw = getVal(categoriaIdx).toLowerCase().trim();
+        const subcatRaw = getVal(subcatIdx);
+        const nombre = getVal(nombreIdx);
+        const desc = getVal(descIdx);
+        const precioRaw = getVal(precioIdx);
+        const disponible = getVal(disponibleIdx).toUpperCase();
+
+        const lowerNom = nombre.toLowerCase();
+        if (lowerNom === "nombre" || lowerNom === "plato" || lowerNom === "producto" || catRaw === "categoría" || catRaw === "categoria") {
+            continue;
+        }
+
+        const rowText = `${catRaw} ${nombre} ${desc}`.toLowerCase();
+        if (rowText.includes("wsp") || rowText.includes("whatsapp") || rowText.includes("telefono") || rowText.includes("reserva") || catRaw.includes("config")) {
+            const phoneCandidate = (precioRaw || desc || nombre).replace(/[^0-9]/g, '');
+            if (phoneCandidate.length >= 8) {
+                CURRENT_WHATSAPP_NUMBER = phoneCandidate;
+            }
+            continue;
+        }
+
+        if (!nombre || disponible === "NO" || disponible === "0" || disponible === "FALSE") {
+            continue;
+        }
+
+        let catKey = catRaw || "pizzas";
+        if (
+            catKey.includes("beb") || catKey.includes("trag") || catKey.includes("coctel") ||
+            catKey.includes("cóctel") || catKey.includes("cervez") || catKey.includes("vino") ||
+            catKey.includes("gaseos") || catKey.includes("aperit") || catKey.includes("bar") || catKey.includes("licor")
+        ) {
+            catKey = "bebidas";
+        } else if (catKey.includes("mier") || catKey.includes("miér")) {
+            catKey = "miercoles";
+        } else if (catKey.includes("piz")) {
+            catKey = "pizzas";
+        } else if (catKey.includes("vier") || catKey.includes("parr") || catKey.includes("asad")) {
+            catKey = "parrillada";
+        }
+
+        if (!menuOrganizado[catKey]) {
+            const meta = CATEGORY_METADATA[catKey] || {
+                id: catKey,
+                titulo: (catRaw || catKey).toUpperCase(),
+                tag: "Menú",
+                subtitulo: "Variedades y precios actualizados",
+                fondo: "fondo.png"
+            };
+            menuOrganizado[catKey] = {
+                ...meta,
+                items: []
+            };
+        }
+
+        let precio = "";
+        const num = Number(precioRaw.replace(/[^0-9.-]+/g, ''));
+        if (!isNaN(num) && num > 0 && !precioRaw.includes("$")) {
+            precio = "$" + num.toLocaleString("es-AR");
+        } else {
+            precio = precioRaw;
+        }
+
+        const itemObj = {
+            nombre: nombre,
+            desc: desc,
+            precio: precio
+        };
+
+        if (catKey === "bebidas") {
+            const subtype = getDrinkSubtype(nombre, desc, subcatRaw, catRaw);
+            itemObj.tipo = subtype.id;
+            itemObj.tipoNombre = subtype.nombre;
+            itemObj.tipoIcon = "";
+            itemObj.tipoOrden = subtype.orden;
+        }
+
+        menuOrganizado[catKey].items.push(itemObj);
+    }
+
+    if (menuOrganizado.bebidas && menuOrganizado.bebidas.items.length > 0) {
+        menuOrganizado.bebidas.items.sort((a, b) => (a.tipoOrden || 99) - (b.tipoOrden || 99));
+    }
+
+    menuOrganizado._whatsappNumber = CURRENT_WHATSAPP_NUMBER;
+
+    if (Object.keys(menuOrganizado).filter(k => !k.startsWith('_')).length > 0) {
+        try {
+            localStorage.setItem('rivera_menu_cache', JSON.stringify(menuOrganizado));
+        } catch (e) {}
+        return menuOrganizado;
+    }
+
+    throw new Error("Matrix sin productos válidos");
+}
+
+// Carga de respaldo local estatico (menu.json)
+async function fetchFallbackMenuJson() {
+    try {
+        const resp = await fetch('menu.json?t=' + new Date().getTime());
+        if (resp.ok) {
+            const data = await resp.json();
+            if (data && Object.keys(data).filter(k => !k.startsWith('_')).length > 0) {
+                return data;
+            }
+        }
+    } catch (e) {
+        console.warn("No se pudo cargar el archivo estático local menu.json:", e);
+    }
+    return null;
+}
+
+// Estrategia Stale-While-Revalidate: Muestra caché en 0ms y actualiza en segundo plano desde Google Sheets
+async function loadMenuWithStaleWhileRevalidate(onMenuData, onError) {
+    let hasRenderedCache = false;
+    const cached = getCachedMenu();
+
+    if (cached) {
+        hasRenderedCache = true;
+        try {
+            onMenuData(cached, { isCache: true });
+        } catch (e) {
+            console.error("Error al renderizar desde caché:", e);
+        }
+    }
+
+    try {
+        const freshData = await fetchMenuFromSheets();
+        if (freshData) {
+            onMenuData(freshData, { isCache: false });
+        }
+    } catch (err) {
+        console.warn("No se pudo actualizar desde Google Sheets en vivo:", err);
+        if (!hasRenderedCache) {
+            const fallbackJson = await fetchFallbackMenuJson();
+            if (fallbackJson) {
+                onMenuData(fallbackJson, { isCache: false });
+                return;
+            }
+            if (onError) {
+                onError(err);
+            } else {
+                throw err;
+            }
+        }
     }
 }
 
@@ -355,6 +751,23 @@ async function sendFeedbackReview(reviewData) {
         console.warn("No se pudo guardar copia local en localStorage:", e);
     }
 
+    // 1. Enviar directamente a la pestaña 'Opiniones' de tu Google Sheet mediante Apps Script Web App
+    if (GOOGLE_APPS_SCRIPT_URL) {
+        try {
+            await fetch(GOOGLE_APPS_SCRIPT_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify(payload)
+            });
+            console.log("Calificación enviada a la pestaña 'Opiniones' de Google Sheets exitosamente:", payload);
+        } catch (err) {
+            console.warn("No se pudo enviar a Apps Script Web App, intentando Google Form:", err);
+        }
+    }
+
+    // 2. Enviar a Google Form (Respaldos)
     if (GOOGLE_FORM_ACTION_URL) {
         try {
             const formData = new URLSearchParams();
@@ -371,9 +784,9 @@ async function sendFeedbackReview(reviewData) {
                 },
                 body: formData.toString()
             });
-            console.log("Calificación enviada a Google Sheets exitosamente:", payload);
+            console.log("Calificación enviada a Google Form de respaldo exitosamente.");
         } catch (err) {
-            console.error("Error al enviar calificación a Google Sheets:", err);
+            console.error("Error al enviar calificación a Google Form:", err);
         }
     }
 

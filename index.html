@@ -877,46 +877,53 @@
     <script src="sheets-api.js"></script>
 
     <script>
-        // Carga de categorias del menu
-        async function loadCategories() {
+        // Renderizado de tarjetas de categorias
+        function renderCategories(data) {
             const grid = document.getElementById('grid-menu');
 
-            try {
-                const data = await fetchMenuFromSheets();
-
-                const wspBtn = document.getElementById('btn-wsp-flotante');
-                if (wspBtn) {
-                    wspBtn.href = buildWhatsAppLink('general');
-                }
-
-                const keys = Object.keys(data).filter(k => !k.startsWith('_'));
-
-                if (keys.length === 0) {
-                    grid.innerHTML = '<div class="loading-categories">No hay productos disponibles en este momento.</div>';
-                    return;
-                }
-
-                grid.innerHTML = '';
-                keys.forEach(key => {
-                    const cat = data[key];
-                    const card = document.createElement('a');
-                    card.href = `ver-menu.html?cat=${encodeURIComponent(key)}`;
-                    card.className = 'menu-card';
-                    card.id = `btn-${key}`;
-                    card.innerHTML = `
-                        <div class="card-top">
-                            <span class="card-tag">${cat.tag || 'Menú'}</span>
-                        </div>
-                        <div class="card-title">${cat.titulo}</div>
-                        <div class="card-subtitle">${cat.subtitulo || ''}</div>
-                        <div class="card-arrow">→</div>
-                    `;
-                    grid.appendChild(card);
-                });
-            } catch (err) {
-                console.error("Error al cargar categorías desde Google Sheets:", err);
-                grid.innerHTML = '<div class="loading-categories">Error al conectar con la carta. Por favor recarga la página.</div>';
+            const wspBtn = document.getElementById('btn-wsp-flotante');
+            if (wspBtn) {
+                wspBtn.href = buildWhatsAppLink('general');
             }
+
+            const keys = Object.keys(data).filter(k => !k.startsWith('_'));
+
+            if (keys.length === 0) {
+                grid.innerHTML = '<div class="loading-categories">No hay productos disponibles en este momento.</div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            keys.forEach(key => {
+                const cat = data[key];
+                const card = document.createElement('a');
+                card.href = `ver-menu.html?cat=${encodeURIComponent(key)}`;
+                card.className = 'menu-card';
+                card.id = `btn-${key}`;
+                card.innerHTML = `
+                    <div class="card-top">
+                        <span class="card-tag">${cat.tag || 'Menú'}</span>
+                    </div>
+                    <div class="card-title">${cat.titulo}</div>
+                    <div class="card-subtitle">${cat.subtitulo || ''}</div>
+                    <div class="card-arrow">→</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Carga de categorias del menu con soporte Stale-While-Revalidate
+        function loadCategories() {
+            const grid = document.getElementById('grid-menu');
+            loadMenuWithStaleWhileRevalidate(
+                (data) => {
+                    renderCategories(data);
+                },
+                (err) => {
+                    console.error("Error al cargar categorías desde Google Sheets:", err);
+                    grid.innerHTML = '<div class="loading-categories">Error al conectar con la carta. Por favor recarga la página.</div>';
+                }
+            );
         }
 
         loadCategories();

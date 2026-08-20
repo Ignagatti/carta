@@ -1,0 +1,94 @@
+{
+  "bebidas": {
+    "id": "bebidas",
+    "titulo": "BEBIDAS",
+    "tag": "Carta",
+    "subtitulo": "Variedades",
+    "fondo": "fondo.png",
+    "items": [
+      {
+        "nombre": "Cerveza Heineken 1L",
+        "desc": "Cerveza rubia embotellada 1 litro",
+        "precio": "$4.500",
+        "tipo": "cervezas",
+        "tipoNombre": "Cervezas",
+        "tipoOrden": 1
+      },
+      {
+        "nombre": "Cerveza Santa Fe 1L",
+        "desc": "Cerveza tradicional 1 litro",
+        "precio": "$3.800",
+        "tipo": "cervezas",
+        "tipoNombre": "Cervezas",
+        "tipoOrden": 1
+      },
+      {
+        "nombre": "Coca-Cola 1.25L",
+        "desc": "Gaseosa sabor original",
+        "precio": "$2.500",
+        "tipo": "gaseosas",
+        "tipoNombre": "Gaseosas y Saborizadas",
+        "tipoOrden": 2
+      },
+      {
+        "nombre": "Agua Mineral 500ml",
+        "desc": "Agua sin gas",
+        "precio": "$1.500",
+        "tipo": "aguas",
+        "tipoNombre": "Aguas y Sodas",
+        "tipoOrden": 3
+      },
+      {
+        "nombre": "Fernet Branca con Coca",
+        "desc": "Vaso preparado",
+        "precio": "$4.000",
+        "tipo": "tragos",
+        "tipoNombre": "Tragos",
+        "tipoOrden": 4
+      }
+    ]
+  },
+  "miercoles": {
+    "id": "miercoles",
+    "titulo": "MIÉRCOLES",
+    "tag": "Miércoles",
+    "subtitulo": "Menú variado de la casa",
+    "fondo": "fondo.png",
+    "items": [
+      {
+        "nombre": "Menú del Día Miércoles",
+        "desc": "Plato principal del día según especialidad de la semana",
+        "precio": "Consultar"
+      }
+    ]
+  },
+  "pizzas": {
+    "id": "pizzas",
+    "titulo": "PIZZA LIBRE",
+    "tag": "Jue & Sáb",
+    "subtitulo": "Jueves y sábados con todas las variedades",
+    "fondo": "fondo.png",
+    "items": [
+      {
+        "nombre": "Pizza Libre por Persona",
+        "desc": "Variedad continua de pizzas artesanales",
+        "precio": "Consultar"
+      }
+    ]
+  },
+  "parrillada": {
+    "id": "parrillada",
+    "titulo": "PARRILLADA",
+    "tag": "Viernes",
+    "subtitulo": "Viernes de parrillada completa",
+    "fondo": "fondo.png",
+    "items": [
+      {
+        "nombre": "Parrillada Completa por Persona",
+        "desc": "Cortes variados de carne a la parrilla, achuras y ensaladas",
+        "precio": "Consultar"
+      }
+    ]
+  },
+  "_whatsappNumber": "5493496000000"
+}
