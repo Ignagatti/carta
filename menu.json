@@ -1,0 +1,405 @@
+{
+  "bebidas": {
+    "id": "bebidas",
+    "titulo": "BEBIDAS",
+    "subtitulo": "Variedades",
+    "tag": "Carta",
+    "fondo": "fondo.png",
+    "items": [
+      {
+        "id": 22,
+        "nombre": "Agua",
+        "desc": "",
+        "precio": "$3.500",
+        "disponible": true,
+        "tipo": "aguas",
+        "tipoNombre": "Aguas y Sodas",
+        "tipoOrden": 3
+      },
+      {
+        "id": 23,
+        "nombre": "Agua saborizada (manzana/pomelo/naranja)",
+        "desc": "",
+        "precio": "$3.500",
+        "disponible": true,
+        "tipo": "aguas",
+        "tipoNombre": "Aguas y Sodas",
+        "tipoOrden": 3
+      },
+      {
+        "id": 24,
+        "nombre": "Coca/Sprite",
+        "desc": "",
+        "precio": "$5.500",
+        "disponible": true,
+        "tipo": "gaseosas",
+        "tipoNombre": "Gaseosas y Saborizadas",
+        "tipoOrden": 2
+      },
+      {
+        "id": 25,
+        "nombre": "Jarro de fernet/gancia",
+        "desc": "",
+        "precio": "$7.000",
+        "disponible": true,
+        "tipo": "tragos",
+        "tipoNombre": "Tragos",
+        "tipoOrden": 4
+      },
+      {
+        "id": 26,
+        "nombre": "Vermú",
+        "desc": "",
+        "precio": "$2.500",
+        "disponible": true,
+        "tipo": "otras",
+        "tipoNombre": "Otras Bebidas",
+        "tipoOrden": 6
+      },
+      {
+        "id": 27,
+        "nombre": "Lata de coca/sprite",
+        "desc": "",
+        "precio": "$2.500",
+        "disponible": true,
+        "tipo": "gaseosas",
+        "tipoNombre": "Gaseosas y Saborizadas",
+        "tipoOrden": 2
+      },
+      {
+        "id": 28,
+        "nombre": "Lata de coca/sprite+fernet",
+        "desc": "",
+        "precio": "$5.000",
+        "disponible": true,
+        "tipo": "tragos",
+        "tipoNombre": "Tragos",
+        "tipoOrden": 4
+      },
+      {
+        "id": 29,
+        "nombre": "Soda",
+        "desc": "",
+        "precio": "$3.500",
+        "disponible": true,
+        "tipo": "aguas",
+        "tipoNombre": "Aguas y Sodas",
+        "tipoOrden": 3
+      },
+      {
+        "id": 30,
+        "nombre": "Cerveza Santa Fe",
+        "desc": "",
+        "precio": "$5.500",
+        "disponible": true,
+        "tipo": "cervezas",
+        "tipoNombre": "Cervezas",
+        "tipoOrden": 1
+      },
+      {
+        "id": 31,
+        "nombre": "Cerveza Pilsen",
+        "desc": "",
+        "precio": "$6.000",
+        "disponible": true,
+        "tipo": "cervezas",
+        "tipoNombre": "Cervezas",
+        "tipoOrden": 1
+      },
+      {
+        "id": 32,
+        "nombre": "Cerveza Heineken",
+        "desc": "",
+        "precio": "$8.500",
+        "disponible": true,
+        "tipo": "cervezas",
+        "tipoNombre": "Cervezas",
+        "tipoOrden": 1
+      },
+      {
+        "id": 33,
+        "nombre": "Vino blanco Cosecha Tardía (dulce)",
+        "desc": "",
+        "precio": "$9.000",
+        "disponible": true,
+        "tipo": "vinos",
+        "tipoNombre": "Vinos",
+        "tipoOrden": 5
+      },
+      {
+        "id": 34,
+        "nombre": "Vino blanco Alma Mora (dulce)",
+        "desc": "",
+        "precio": "$10.500",
+        "disponible": true,
+        "tipo": "vinos",
+        "tipoNombre": "Vinos",
+        "tipoOrden": 5
+      },
+      {
+        "id": 35,
+        "nombre": "Vino blanco Portillo",
+        "desc": "",
+        "precio": "$7.500",
+        "disponible": true,
+        "tipo": "vinos",
+        "tipoNombre": "Vinos",
+        "tipoOrden": 5
+      },
+      {
+        "id": 36,
+        "nombre": "Vino blanco Latitud",
+        "desc": "",
+        "precio": "$10.500",
+        "disponible": true,
+        "tipo": "vinos",
+        "tipoNombre": "Vinos",
+        "tipoOrden": 5
+      },
+      {
+        "id": 37,
+        "nombre": "Vino blanco Valentin",
+        "desc": "",
+        "precio": "$8.000",
+        "disponible": true,
+        "tipo": "vinos",
+        "tipoNombre": "Vinos",
+        "tipoOrden": 5
+      },
+      {
+        "id": 38,
+        "nombre": "Vino tinto Valentin",
+        "desc": "",
+        "precio": "$8.000",
+        "disponible": true,
+        "tipo": "vinos",
+        "tipoNombre": "Vinos",
+        "tipoOrden": 5
+      },
+      {
+        "id": 39,
+        "nombre": "Vino tinto Cordero con Piel de Lobo",
+        "desc": "",
+        "precio": "$9.000",
+        "disponible": true,
+        "tipo": "vinos",
+        "tipoNombre": "Vinos",
+        "tipoOrden": 5
+      },
+      {
+        "id": 40,
+        "nombre": "Vino tinto Alma Mora",
+        "desc": "",
+        "precio": "$9.500",
+        "disponible": true,
+        "tipo": "vinos",
+        "tipoNombre": "Vinos",
+        "tipoOrden": 5
+      },
+      {
+        "id": 41,
+        "nombre": "Vino tinto Latitud 33",
+        "desc": "",
+        "precio": "$10.500",
+        "disponible": true,
+        "tipo": "vinos",
+        "tipoNombre": "Vinos",
+        "tipoOrden": 5
+      },
+      {
+        "id": 42,
+        "nombre": "Vino tinto Salentein",
+        "desc": "",
+        "precio": "$18.000",
+        "disponible": true,
+        "tipo": "vinos",
+        "tipoNombre": "Vinos",
+        "tipoOrden": 5
+      },
+      {
+        "id": 43,
+        "nombre": "Vino tinto Rutini",
+        "desc": "",
+        "precio": "$23.000",
+        "disponible": true,
+        "tipo": "vinos",
+        "tipoNombre": "Vinos",
+        "tipoOrden": 5
+      },
+      {
+        "id": 44,
+        "nombre": "Medida de fernet",
+        "desc": "",
+        "precio": "$2.500",
+        "disponible": true,
+        "tipo": "tragos",
+        "tipoNombre": "Tragos",
+        "tipoOrden": 4
+      },
+      {
+        "id": 45,
+        "nombre": "Piña colada",
+        "desc": "",
+        "precio": "$3.000",
+        "disponible": true,
+        "tipo": "tragos",
+        "tipoNombre": "Tragos",
+        "tipoOrden": 4
+      },
+      {
+        "id": 46,
+        "nombre": "Gin Tonic",
+        "desc": "",
+        "precio": "$6.500",
+        "disponible": true,
+        "tipo": "tragos",
+        "tipoNombre": "Tragos",
+        "tipoOrden": 4
+      },
+      {
+        "id": 47,
+        "nombre": "Whisky/Ginebra",
+        "desc": "",
+        "precio": "$3.500",
+        "disponible": true,
+        "tipo": "tragos",
+        "tipoNombre": "Tragos",
+        "tipoOrden": 4
+      }
+    ]
+  },
+  "miercoles": {
+    "id": "miercoles",
+    "titulo": "MIÉRCOLES",
+    "subtitulo": "Menú variado de la casa",
+    "tag": "Miércoles",
+    "fondo": "fondo.png",
+    "items": [
+      {
+        "id": 48,
+        "nombre": "Menu distinto cada miercoles",
+        "desc": "",
+        "precio": "Consultar",
+        "disponible": true
+      }
+    ]
+  },
+  "pizzas": {
+    "id": "pizzas",
+    "titulo": "PIZZA LIBRE",
+    "subtitulo": "Jueves y sábados con todas las variedades",
+    "tag": "Jue & Sáb",
+    "fondo": "fondo.png",
+    "items": [
+      {
+        "id": 9,
+        "nombre": "Pizza libre",
+        "desc": "(Por persona)",
+        "precio": "$16.000",
+        "disponible": true
+      },
+      {
+        "id": 10,
+        "nombre": "Muzzarella",
+        "desc": "Salsa casera, muzzarella, y orégano",
+        "precio": "$15.000",
+        "disponible": true
+      },
+      {
+        "id": 11,
+        "nombre": "Cebolla",
+        "desc": "Cebolla",
+        "precio": "$16.000",
+        "disponible": true
+      },
+      {
+        "id": 12,
+        "nombre": "Provenzal",
+        "desc": "Ajo y perejil",
+        "precio": "$16.000",
+        "disponible": true
+      },
+      {
+        "id": 13,
+        "nombre": "Margarita",
+        "desc": "Huevo rallado y oregano",
+        "precio": "$16.000",
+        "disponible": true
+      },
+      {
+        "id": 14,
+        "nombre": "Especial",
+        "desc": "Jamón cocido y huevo",
+        "precio": "$17.000",
+        "disponible": true
+      },
+      {
+        "id": 15,
+        "nombre": "Napolitana",
+        "desc": "Rodajas de tomate, provenzal y queso sardo",
+        "precio": "$17.000",
+        "disponible": true
+      },
+      {
+        "id": 16,
+        "nombre": "Calabresa",
+        "desc": "Rodajas de salame",
+        "precio": "$17.000",
+        "disponible": true
+      },
+      {
+        "id": 17,
+        "nombre": "Rucula",
+        "desc": "Rucula y queso sardo",
+        "precio": "$17.000",
+        "disponible": true
+      },
+      {
+        "id": 18,
+        "nombre": "Anchoa",
+        "desc": "Anchoas y orégano",
+        "precio": "$18.000",
+        "disponible": true
+      },
+      {
+        "id": 19,
+        "nombre": "Roquefort",
+        "desc": "Roquefort",
+        "precio": "$18.000",
+        "disponible": true
+      },
+      {
+        "id": 20,
+        "nombre": "3 Quesos",
+        "desc": "Roquefort y sardo",
+        "precio": "$18.000",
+        "disponible": true
+      }
+    ]
+  },
+  "parrillada": {
+    "id": "parrillada",
+    "titulo": "PARRILLADA",
+    "subtitulo": "Viernes de parrillada completa",
+    "tag": "Viernes",
+    "fondo": "fondo.png",
+    "items": [
+      {
+        "id": 21,
+        "nombre": "Parrillada",
+        "desc": "Incluye: Chinchulín, Tripa, Riñón, Seso, Chorizo, Morcilla,                                                                                                                                Pecho, Vacío, Bondiola,  Papas fritas y ensaladas (A REPETIR)",
+        "precio": "$25.000",
+        "disponible": true
+      }
+    ]
+  },
+  "martes": {
+    "id": "martes",
+    "titulo": "MARTES",
+    "subtitulo": "Especialidades",
+    "tag": "Menú",
+    "fondo": "fondo.png",
+    "items": []
+  },
+  "_whatsappNumber": "5493425093453"
+}

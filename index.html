@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CARTA DIGITAL • Rivera Club</title>
+    <meta name="description"
+        content="Carta digital y menú oficial del Club Bochas Barrio Rivera. Conocé nuestros platos, bebidas, promociones y valoraciones.">
+    <meta name="keywords"
+        content="Rivera Club, Club Bochas Barrio Rivera, carta digital, menú, comidas, minutas, bebidas">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="CARTA DIGITAL • Rivera Club">
+    <meta property="og:description" content="Carta digital y menú oficial del Club Bochas Barrio Rivera.">
+    <meta property="og:type" content="website">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <script>
+        window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+
+    <style>
+        :root {
+            --bg-page: #e8f4fc;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f0f8ff;
+            --border-card: #b6dbf5;
+            --border-hover: #38bdf8;
+            --primary-navy: #0c2340;
+            --accent-blue: #0284c7;
+            --light-blue-bg: #e0f2fe;
+            --light-blue-border: #93c5fd;
+            --light-blue-text: #0369a1;
+            --text-main: #0c2340;
+            --text-muted: #52657d;
+            --shadow-card: 0 4px 16px rgba(12, 35, 64, 0.07);
+            --shadow-card-hover: 0 10px 24px rgba(2, 132, 199, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-page);
+            background-image:
+                radial-gradient(circle at 50% 0%, #ffffff 0%, transparent 75%),
+                linear-gradient(180deg, #eaf4fc 0%, #dbeefa 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        header {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid var(--border-card);
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 8px rgba(12, 35, 64, 0.05);
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        .logo-wrapper:hover {
+            transform: scale(1.03);
+        }
+
+        .logo-img {
+            height: 95px;
+            width: 95px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: #ffffff;
+            padding: 2px;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.12);
+            border: 2px solid var(--light-blue-border);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 36px 20px 80px;
+            text-align: center;
+            max-width: 740px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 16px;
+            background: var(--light-blue-bg);
+            border: 1px solid var(--light-blue-border);
+            border-radius: 9999px;
+            color: var(--light-blue-text);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .badge-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--accent-blue);
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.4rem, 6vw, 3.3rem);
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            color: var(--primary-navy);
+        }
+
+        .subtitle {
+            font-size: 1.02rem;
+            color: var(--text-muted);
+            margin-bottom: 34px;
+            font-weight: 500;
+        }
+
+        .subtitle span {
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        .grid-menu {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            width: 100%;
+        }
+
+        @media (min-width: 540px) {
+            .grid-menu {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+        }
+
+        .menu-card {
+            background: var(--bg-card);
+            border: 1px solid #b6dbf5;
+            border-radius: 16px;
+            padding: 22px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            text-decoration: none;
+            color: var(--text-main);
+            position: relative;
+            transition: all 0.22s ease;
+            box-shadow: var(--shadow-card);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-3px);
+            background: var(--bg-card-hover);
+            border-color: var(--border-hover);
+            box-shadow: var(--shadow-card-hover);
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 12px;
+        }
+
+        .card-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 4px 11px;
+            background: var(--light-blue-bg);
+            border: 1px solid var(--light-blue-border);
+            border-radius: 20px;
+            color: var(--light-blue-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: var(--primary-navy);
+            margin-bottom: 4px;
+        }
+
+        .card-subtitle {
+            font-size: 0.86rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        .card-arrow {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            color: var(--accent-blue);
+            font-size: 1.2rem;
+            font-weight: 700;
+            transition: transform 0.2s ease;
+        }
+
+        .menu-card:hover .card-arrow {
+            transform: translateX(4px);
+        }
+
+        .loading-categories {
+            grid-column: 1 / -1;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 16px 14px;
+            }
+
+            .logo-img {
+                height: 80px;
+                width: 80px;
+            }
+
+            .main-content {
+                padding: 24px 14px 70px;
+            }
+
+            h1 {
+                font-size: 2.15rem;
+            }
+
+            .subtitle {
+                font-size: 0.92rem;
+                margin-bottom: 24px;
+            }
+
+            .grid-menu {
+                gap: 12px;
+            }
+
+            .menu-card {
+                padding: 18px 16px;
+                border-radius: 14px;
+            }
+
+            .card-title {
+                font-size: 1.15rem;
+            }
+
+            .card-subtitle {
+                font-size: 0.82rem;
+            }
+        }
+
+        .feedback-section {
+            width: 100%;
+            margin-top: 36px;
+        }
+
+        .feedback-card {
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: 20px;
+            padding: 28px 22px;
+            box-shadow: 0 6px 20px rgba(12, 35, 64, 0.08);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feedback-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--accent-blue);
+        }
+
+        .feedback-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 14px;
+            background: var(--light-blue-bg);
+            border: 1px solid var(--light-blue-border);
+            border-radius: 9999px;
+            color: var(--light-blue-text);
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .feedback-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.45rem;
+            font-weight: 800;
+            color: var(--accent-blue);
+            margin-bottom: 6px;
+        }
+
+        .feedback-header p {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .star-rating-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .star-rating {
+            display: inline-flex;
+            flex-direction: row-reverse;
+            gap: 6px;
+            justify-content: center;
+        }
+
+        .star-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 2.3rem;
+            color: #cbd5e1;
+            transition: transform 0.18s ease, color 0.18s ease, filter 0.18s ease;
+            line-height: 1;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .star-btn:hover,
+        .star-btn:hover~.star-btn,
+        .star-btn.active {
+            color: #f59e0b;
+            filter: drop-shadow(0 2px 8px rgba(245, 158, 11, 0.45));
+        }
+
+        .star-btn:hover {
+            transform: scale(1.22) rotate(-6deg);
+        }
+
+        .star-btn:active {
+            transform: scale(0.95);
+        }
+
+        .rating-label {
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: var(--light-blue-text);
+            background: var(--light-blue-bg);
+            padding: 5px 14px;
+            border-radius: 9999px;
+            border: 1px solid var(--light-blue-border);
+            min-height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.25s ease;
+        }
+
+        .rating-label.highlight {
+            background: var(--light-blue-bg);
+            border-color: var(--light-blue-border);
+            color: var(--light-blue-text);
+        }
+
+        .feedback-tags-wrapper {
+            margin: 18px 0 16px;
+            text-align: left;
+            animation: fadeInFeedback 0.3s ease forwards;
+        }
+
+        .tags-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .feedback-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .feedback-chip {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            border-radius: 9999px;
+            padding: 7px 13px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .feedback-chip:hover {
+            border-color: var(--accent-blue);
+            background: var(--light-blue-bg);
+            color: var(--light-blue-text);
+            transform: translateY(-1px);
+        }
+
+        .feedback-chip.selected {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: #ffffff;
+            box-shadow: 0 3px 8px rgba(2, 132, 199, 0.25);
+        }
+
+        .feedback-inputs {
+            margin-top: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: left;
+            animation: fadeInFeedback 0.35s ease forwards;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .input-group label {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .input-group textarea,
+        .input-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            color: var(--text-main);
+            background: #f8fafc;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            resize: vertical;
+        }
+
+        .input-group textarea:focus,
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+        }
+
+        .btn-submit-feedback {
+            background: var(--accent-blue);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 13px 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.22s ease;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
+            margin-top: 4px;
+        }
+
+        .btn-submit-feedback:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35);
+            background: #0369a1;
+        }
+
+        .btn-submit-feedback:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback-success {
+            padding: 20px 10px;
+            animation: fadeInFeedback 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .success-icon-badge {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #dcfce7;
+            color: #15803d;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(21, 128, 61, 0.15);
+        }
+
+        .success-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            margin-bottom: 6px;
+        }
+
+        .success-desc {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+            margin-bottom: 18px;
+            max-width: 440px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .success-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        .btn-google-maps {
+            background: #ffffff;
+            color: #1e293b;
+            border: 1px solid #cbd5e1;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        .btn-google-maps:hover {
+            border-color: #ea4335;
+            background: #fff5f5;
+            color: #ea4335;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset-feedback {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 8px;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeInFeedback {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        footer {
+            background: var(--primary-navy);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            color: #94a3b8;
+            text-align: center;
+            padding: 28px 20px 24px;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+
+        .footer-container {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .footer-social {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-social-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #94a3b8;
+        }
+
+        .instagram-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: #ffffff;
+            padding: 10px 22px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.92rem;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(220, 39, 67, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.25s ease;
+        }
+
+        .instagram-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 6px 20px rgba(220, 39, 67, 0.5);
+            filter: brightness(1.08);
+            color: #ffffff;
+        }
+
+        .instagram-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            flex-shrink: 0;
+            transition: transform 0.25s ease;
+        }
+
+        .instagram-btn:hover svg {
+            transform: rotate(-8deg) scale(1.1);
+        }
+
+        .footer-copy {
+            font-size: 0.82rem;
+            color: #94a3b8;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 14px;
+            width: 100%;
+        }
+
+        footer strong {
+            color: #ffffff;
+        }
+
+        .footer-copy a {
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .footer-copy a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-wrapper">
+            <img src="FOTO.PNG" alt="Rivera Club - Esperanza, Santa Fe" class="logo-img">
+        </div>
+    </header>
+
+    <div class="main-content">
+        <div class="badge">
+            <span class="badge-dot"></span>
+            Menú Digital
+        </div>
+
+        <h1>Rivera Club</h1>
+        <p class="subtitle">Parrilla - Bar - Esperanza, Santa Fe</p>
+
+        <div class="grid-menu" id="grid-menu">
+            <div class="loading-categories">Cargando carta en vivo...</div>
+        </div>
+
+        <section class="feedback-section" id="feedback-section">
+            <div class="feedback-card">
+                <div class="feedback-header">
+                    <span class="feedback-badge">Tu Opinión</span>
+                    <h2>¿Cómo fue tu experiencia hoy?</h2>
+                    <p>Tu opinión nos ayuda a brindarte el mejor servicio en cada visita.</p>
+                </div>
+
+                <form id="feedback-form" class="feedback-form" onsubmit="handleFeedbackSubmit(event)">
+                    <div class="star-rating-container">
+                        <div class="star-rating" id="star-rating" role="radiogroup"
+                            aria-label="Calificación de 1 a 5 estrellas">
+                            <button type="button" class="star-btn" data-value="5"
+                                title="5 estrellas - Excelente">★</button>
+                            <button type="button" class="star-btn" data-value="4"
+                                title="4 estrellas - Muy buena">★</button>
+                            <button type="button" class="star-btn" data-value="3" title="3 estrellas - Buena">★</button>
+                            <button type="button" class="star-btn" data-value="2"
+                                title="2 estrellas - Regular">★</button>
+                            <button type="button" class="star-btn" data-value="1"
+                                title="1 estrella - Muy mala">★</button>
+                        </div>
+                        <div class="rating-label" id="rating-label">Toca las estrellas para calificar</div>
+                    </div>
+
+                    <div class="feedback-tags-wrapper" id="feedback-tags-wrapper" style="display: none;">
+                        <div class="tags-title" id="tags-title">¿Qué fue lo más destacado?</div>
+                        <div class="feedback-chips" id="feedback-chips"></div>
+                    </div>
+
+                    <div class="feedback-inputs" id="feedback-inputs" style="display: none;">
+                        <div class="input-group">
+                            <label for="feedback-comment">Comentario o sugerencia (opcional)</label>
+                            <textarea id="feedback-comment" rows="3" placeholder="Comentario o sugerencia"></textarea>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="feedback-author">Tu nombre o N° de mesa (opcional)</label>
+                            <input type="text" id="feedback-author" placeholder="Nombre o N° de mesa">
+                        </div>
+
+                        <button type="submit" id="btn-submit-feedback" class="btn-submit-feedback">
+                            <span>Enviar Calificación</span>
+                            <span class="btn-icon">➜</span>
+                        </button>
+                    </div>
+                </form>
+
+                <div id="feedback-success" class="feedback-success" style="display: none;">
+                    <div class="success-icon-badge" id="success-icon">✓</div>
+                    <div class="success-title" id="success-title">¡Muchas gracias por tu opinión!</div>
+                    <div class="success-desc" id="success-desc">Tu valoración ha sido registrada correctamente.</div>
+
+                    <div class="success-actions" id="success-actions">
+                        <a href="https://www.google.com/maps/place/Club+Bochas+Barrio+Rivera/@-31.4455704,-60.9352463,19z/data=!4m8!3m7!1s0x95b5133d054ac1dd:0xa44781d89be03d78!8m2!3d-31.4451511!4d-60.9352919!9m1!1b1!16s%2Fg%2F1tf08vjj?authuser=0&entry=ttu"
+                            id="btn-maps-action" target="_blank" rel="noopener noreferrer" class="btn-google-maps"
+                            style="display: none;">
+                            <span>Compartir también en Google Maps</span>
+                        </a>
+                        <button type="button" class="btn-reset-feedback" onclick="resetFeedbackForm()">Calificar otra
+                            vez</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-social">
+                <span class="footer-social-label">Seguinos en Instagram</span>
+                <a href="https://www.instagram.com/club_rivera_esperanza/#" target="_blank" rel="noopener noreferrer"
+                    class="instagram-btn" aria-label="Instagram de Rivera Club @club_rivera_esperanza">
+                    <svg viewBox="0 0 24 24">
+                        <path
+                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                    </svg>
+                    <span>@club_rivera_esperanza</span>
+                </a>
+            </div>
+            <div class="footer-copy">
+                Copyright © 2026 <strong><a href="https://www.instagram.com/igna.gatti/" target="_blank"
+                        rel="noopener noreferrer">Ignacio Gatti</a></strong> • Todos los derechos reservados
+            </div>
+        </div>
+    </footer>
+
+    <script src="neon-api.js?v=4"></script>
+    <script src="sheets-api.js"></script>
+
+    <script>
+        // Renderizado de tarjetas de categorias
+        function renderCategories(data) {
+            const grid = document.getElementById('grid-menu');
+
+            const keys = Object.keys(data).filter(k => !k.startsWith('_'));
+
+            if (keys.length === 0) {
+                grid.innerHTML = '<div class="loading-categories">No hay productos disponibles en este momento.</div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            keys.forEach(key => {
+                const cat = data[key];
+                const card = document.createElement('a');
+                card.href = `ver-menu.html?cat=${encodeURIComponent(key)}`;
+                card.className = 'menu-card';
+                card.id = `btn-${key}`;
+                card.innerHTML = `
+                    <div class="card-top">
+                        <span class="card-tag">${cat.tag || 'Menú'}</span>
+                    </div>
+                    <div class="card-title">${cat.titulo}</div>
+                    <div class="card-subtitle">${cat.subtitulo || ''}</div>
+                    <div class="card-arrow">→</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Carga 100% en vivo desde Neon Postgres con Sincronización Continua
+        async function loadCategories() {
+            const grid = document.getElementById('grid-menu');
+            try {
+                const data = await fetchMenuFromNeon();
+                renderCategories(data);
+            } catch (err) {
+                console.error("Error al cargar la carta 100% en vivo desde Neon:", err);
+                grid.innerHTML = '<div class="loading-categories">Se requiere conexión a internet para consultar los precios en vivo.<br><br><button onclick="window.location.reload()" style="padding:10px 18px; background:var(--accent-blue); color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer;">Reintentar conexión</button></div>';
+            }
+
+            if (typeof startLiveMenuSync === 'function') {
+                startLiveMenuSync((updatedData) => {
+                    renderCategories(updatedData);
+                });
+            }
+        }
+
+        loadCategories();
+
+        // Feedback y resenas
+        let currentRating = 0;
+        let selectedTags = new Set();
+
+        const RATING_MESSAGES = {
+            1: "1 Estrella • Muy mala experiencia",
+            2: "2 Estrellas • Regular",
+            3: "3 Estrellas • Buena experiencia",
+            4: "4 Estrellas • Muy buena",
+            5: "5 Estrellas • Excelente experiencia"
+        };
+
+        const POSITIVE_TAGS = [
+            "Parrilla excelente",
+            "Pizzas recomendadas",
+            "Rápida atención",
+            "Buen ambiente",
+            "Precios accesibles",
+        ];
+
+        const IMPROVEMENT_TAGS = [
+            "Demora en la atención",
+            "Temperatura de la comida",
+            "Atención del personal",
+            "Nivel de sonido",
+            "Variedad de opciones"
+        ];
+
+        function setupFeedbackWidget() {
+            const starButtons = document.querySelectorAll('.star-btn');
+            const ratingLabel = document.getElementById('rating-label');
+            const starContainer = document.getElementById('star-rating');
+
+            starButtons.forEach(btn => {
+                const val = parseInt(btn.getAttribute('data-value'), 10);
+                btn.addEventListener('click', () => {
+                    setRating(val);
+                });
+                btn.addEventListener('mouseenter', () => {
+                    ratingLabel.textContent = RATING_MESSAGES[val] || `${val} Estrellas`;
+                    ratingLabel.classList.add('highlight');
+                });
+            });
+
+            starContainer.addEventListener('mouseleave', () => {
+                if (currentRating > 0) {
+                    ratingLabel.textContent = RATING_MESSAGES[currentRating];
+                    ratingLabel.classList.add('highlight');
+                } else {
+                    ratingLabel.textContent = 'Toca las estrellas para calificar';
+                    ratingLabel.classList.remove('highlight');
+                }
+            });
+        }
+
+        function setRating(val) {
+            currentRating = val;
+            const starButtons = document.querySelectorAll('.star-btn');
+            const ratingLabel = document.getElementById('rating-label');
+            const tagsWrapper = document.getElementById('feedback-tags-wrapper');
+            const inputsWrapper = document.getElementById('feedback-inputs');
+            const tagsTitle = document.getElementById('tags-title');
+
+            starButtons.forEach(btn => {
+                const btnVal = parseInt(btn.getAttribute('data-value'), 10);
+                if (btnVal <= val) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            ratingLabel.textContent = RATING_MESSAGES[val] || `${val} Estrellas`;
+            ratingLabel.classList.add('highlight');
+
+            tagsWrapper.style.display = 'block';
+            inputsWrapper.style.display = 'flex';
+
+            selectedTags.clear();
+            const chipsContainer = document.getElementById('feedback-chips');
+            chipsContainer.innerHTML = '';
+
+            const tagsToUse = val >= 4 ? POSITIVE_TAGS : IMPROVEMENT_TAGS;
+            tagsTitle.textContent = val >= 4 ? "¿Qué fue lo más destacado?" : "¿En qué podemos mejorar?";
+
+            tagsToUse.forEach(tagText => {
+                const chip = document.createElement('button');
+                chip.type = 'button';
+                chip.className = 'feedback-chip';
+                chip.textContent = tagText;
+                chip.addEventListener('click', () => {
+                    if (selectedTags.has(tagText)) {
+                        selectedTags.delete(tagText);
+                        chip.classList.remove('selected');
+                    } else {
+                        selectedTags.add(tagText);
+                        chip.classList.add('selected');
+                    }
+                });
+                chipsContainer.appendChild(chip);
+            });
+        }
+
+        async function handleFeedbackSubmit(event) {
+            event.preventDefault();
+            if (currentRating === 0) {
+                alert("Por favor selecciona una cantidad de estrellas tocando las estrellas arriba.");
+                return;
+            }
+
+            const submitBtn = document.getElementById('btn-submit-feedback');
+            const comment = document.getElementById('feedback-comment').value;
+            const author = document.getElementById('feedback-author').value;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>Enviando opinión...</span>';
+
+            const reviewData = {
+                rating: currentRating,
+                ratingText: RATING_MESSAGES[currentRating] || `${currentRating} Estrellas`,
+                tags: Array.from(selectedTags),
+                comment: comment,
+                author: author
+            };
+
+            try {
+                await sendFeedbackReview(reviewData);
+
+                document.getElementById('feedback-form').style.display = 'none';
+                const successBox = document.getElementById('feedback-success');
+                successBox.style.display = 'block';
+
+                const icon = document.getElementById('success-icon');
+                const title = document.getElementById('success-title');
+                const desc = document.getElementById('success-desc');
+                const mapsBtn = document.getElementById('btn-maps-action');
+
+                icon.textContent = '✓';
+                icon.style.background = '#dcfce7';
+                icon.style.color = '#15803d';
+
+                if (currentRating >= 4) {
+                    title.textContent = '¡Muchas gracias!';
+                    desc.textContent = 'Nos alegra saber que disfrutaste de Rivera Club. Si quieres, puedes dejarnos también tu opinión en Google Maps:';
+
+                    if (typeof GOOGLE_MAPS_REVIEW_URL !== 'undefined' && GOOGLE_MAPS_REVIEW_URL) {
+                        mapsBtn.href = GOOGLE_MAPS_REVIEW_URL;
+                        mapsBtn.style.display = 'inline-flex';
+                    }
+                } else {
+                    title.textContent = '¡Muchas gracias por tu opinión!';
+                    desc.textContent = 'Agradecemos tu sinceridad. Tomamos cada comentario para seguir mejorando día a día la atención y la calidad de nuestro servicio.';
+
+                    mapsBtn.style.display = 'none';
+                }
+
+            } catch (err) {
+                console.error("Error al procesar feedback:", err);
+                alert("Hubo un detalle al enviar, pero tu mensaje fue guardado localmente. ¡Gracias!");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>Enviar Calificación</span><span class="btn-icon">➜</span>';
+            }
+        }
+
+        function resetFeedbackForm() {
+            currentRating = 0;
+            selectedTags.clear();
+            document.getElementById('feedback-form').reset();
+            document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('rating-label').textContent = 'Toca las estrellas para calificar';
+            document.getElementById('rating-label').classList.remove('highlight');
+            document.getElementById('feedback-tags-wrapper').style.display = 'none';
+            document.getElementById('feedback-inputs').style.display = 'none';
+            document.getElementById('feedback-success').style.display = 'none';
+            document.getElementById('feedback-form').style.display = 'block';
+        }
+
+        setupFeedbackWidget();
+    </script>
+
+</body>
+
+</html>
