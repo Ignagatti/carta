@@ -631,6 +631,126 @@
             }
         }
 
+        .location-section {
+            width: 100%;
+            margin-top: 36px;
+        }
+
+        .location-card {
+            background: #ffffff;
+            border: 1px solid var(--border-card);
+            border-radius: 20px;
+            padding: 28px 22px;
+            box-shadow: 0 6px 20px rgba(12, 35, 64, 0.08);
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .location-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--accent-blue);
+        }
+
+        .location-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 14px;
+            background: var(--light-blue-bg);
+            border: 1px solid var(--light-blue-border);
+            border-radius: 9999px;
+            color: var(--light-blue-text);
+            font-size: 0.76rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .location-header h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-navy);
+            margin-bottom: 8px;
+        }
+
+        .location-header p {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            margin-bottom: 22px;
+            line-height: 1.45;
+            font-weight: 500;
+        }
+
+        .map-wrapper {
+            width: 100%;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid var(--border-card);
+            box-shadow: 0 4px 12px rgba(12, 35, 64, 0.05);
+            margin-bottom: 18px;
+            background: #f8fafc;
+        }
+
+        .map-wrapper iframe {
+            width: 100%;
+            height: 280px;
+            border: 0;
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .location-card {
+                padding: 22px 16px;
+                border-radius: 16px;
+            }
+
+            .location-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .location-header p {
+                font-size: 0.85rem;
+                margin-bottom: 16px;
+            }
+
+            .map-wrapper iframe {
+                height: 230px;
+            }
+        }
+
+        .btn-open-maps {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--accent-blue);
+            color: #ffffff;
+            padding: 13px 22px;
+            border-radius: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            text-decoration: none;
+            transition: all 0.22s ease;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
+            width: 100%;
+        }
+
+        .btn-open-maps:hover {
+            background: #0369a1;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.35);
+            color: #ffffff;
+        }
+
         footer {
             background: var(--primary-navy);
             border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -807,6 +927,31 @@
                             vez</button>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <section class="location-section" id="location-section">
+            <div class="location-card">
+                <div class="location-header">
+                    <span class="location-badge">Dónde Estamos</span>
+                    <h2>Ubicación y Dirección</h2>
+                    <p>Club Bochas Barrio Rivera • Calle Antonio L. Beruti 2105, Esperanza, Santa Fe</p>
+                </div>
+
+                <div class="map-wrapper">
+                    <iframe
+                        src="https://maps.google.com/maps?q=-31.4451511,-60.9352919&z=18&t=k&output=embed"
+                        title="Mapa de ubicación de Rivera Club"
+                        loading="lazy"
+                        allowfullscreen
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+
+                <a href="https://www.google.com/maps/place/Club+Bochas+Barrio+Rivera/@-31.4451922,-60.9349231,82m/data=!3m1!1e3!4m6!3m5!1s0x95b5133d054ac1dd:0xa44781d89be03d78!8m2!3d-31.4451511!4d-60.9352919!16s%2Fg%2F1tf08vjj?entry=ttu"
+                    target="_blank" rel="noopener noreferrer" class="btn-open-maps">
+                    <span>Cómo Llegar en Google Maps</span>
+                </a>
             </div>
         </section>
 
